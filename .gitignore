@@ -36,3 +36,4 @@ env.bak/
 venv.bak/
 
 data/output
+data/input
