@@ -19,20 +19,20 @@ import utils
 
 def run(case=None, out=sys.stdout):
     """Simple test runner.
-    
+
     Call with case = a specific test set:
     the class name of a TestCase-derived class.
     When no case is provided, discovers and runs
     all tests in its own module (its own PDE tab).
-    
+
     Default to normal console text (white text),
     set out=sys.stderr to print as error (red text).
 
     Args:
         case (TestCase): Tests to run.
         out  (stream file object): Where to write results.
-        
-    """    
+
+    """
     if case is not None:
         suite = unittest.TestLoader().loadTestsFromTestCase(case)
     else:
@@ -73,5 +73,6 @@ class TestPickling(unittest.TestCase):
         self.assertFalse(os.path.exists('test.pickle'))
 
 if __name__ == '__main__':
-    """Discover and run all tests on main entrypoint."""
+    ## Discover and run all tests on main entrypoint.
     unittest.main(exit=False)
+    
