@@ -1,6 +1,3 @@
-import unittest
-import sys
-
 """Simple unit testing for Processing.py sketches.
 
 A single-tab simple unit testing solution for Processing.py.
@@ -13,6 +10,13 @@ Use `tests.run()` to auto-discover and run all tests.
 Use `tests.run(TestFoo)` to run one specific test class.
 
 """
+import unittest
+import os
+import sys
+
+import parser
+import utils
+
 def run(case=None, out=sys.stdout):
     """Simple test runner.
     
@@ -39,13 +43,34 @@ def run(case=None, out=sys.stdout):
                             verbosity=2, failfast=False, buffer=False,
                             resultclass=None).run(suite)
 
-class TestEqual(unittest.TestCase):
-    """Simple example."""
-    
-    def test_47(self):
-        self.assertEqual(47, 40 + 7)
-        self.assertFalse(47 % 2 == 0)
-        self.assertTrue(47 / 47 == 1)
+class TestEnvironment(unittest.TestCase):
+    """Confirm presence of default named directories and files."""
+
+    def test_paths(self):
+        """Check basic directory structure. """
+        root = sketchPath()
+        self.assertTrue(os.path.isdir(root))
+        self.assertTrue(os.path.isdir(root  + '/data/input'))
+        self.assertTrue(os.path.isdir(root  + '/data/output'))
+        self.assertTrue(os.path.isdir(root  + '/data/templates'))
+        self.assertTrue(os.path.isfile(root + '/data/templates/gallery_css3.html'))
+        self.assertTrue(os.path.isdir(root  + '/styles'))
+        self.assertTrue(os.path.isfile(root  + '/styles/panelcode-grid.css'))
+        self.assertTrue(os.path.isfile(root + '/styles/site.css'))
+
+class TestPickling(unittest.TestCase):
+    """Test picking and unpicking of panelcode objects."""
+
+    def test_load_save_remove(self):
+        """Save, load, and remove pickled (serialized) panelcode pyparsing objects."""
+        pcode_obj = parser.parse("1_2_3", parser.root)
+        self.assertFalse(utils.exists('test.pickle'))
+        utils.pickle_dump(pcode_obj, 'test.pickle')
+        self.assertTrue(utils.exists('test.pickle'))
+        pcode_obj2 = utils.pickle_load('test.pickle')
+        self.assertEqual(pcode_obj.dump(), pcode_obj2.dump())
+        utils.pickle_remove('test.pickle')
+        self.assertFalse(os.path.exists('test.pickle'))
 
 if __name__ == '__main__':
     """Discover and run all tests on main entrypoint."""
