@@ -1,4 +1,5 @@
 import parser
+import render
 import templates
 import tests
 import utils
@@ -23,16 +24,21 @@ def process(pcode_filename, template_filename, result_filename):
     pcode_str = utils.load_str(pcode_filename)
     pcode_str = '\n'.join(pcode_str)
     
+    ## parse panelcode to object
     pcode_obj = parser.parse(pcode_str, parser.root)
     print(pcode_obj)
 
-    ## render input through template into output html
-    html_str = tmpl.render(panelcode=pcode_str)
+    ## render panelcode object to html
+    html_str = "\n".join(render.pobj_to_html5_ccs3_grid(pcode_obj))
+    print(html_str)
 
-    ## save output to html page
-    utils.save_page(html_str, result_filename)
+    ## wrap html in page template
+    html_page_str = tmpl.render(panelcode=html_str)
 
-    ## preview page in web browser
+    ## save html page to file
+    utils.save_page(html_page_str, result_filename)
+
+    ## preview html page file in web browser
     utils.preview(result_filename)
 
 def keyPressed():
