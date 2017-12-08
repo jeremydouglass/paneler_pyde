@@ -1,2 +1,27 @@
+# This pylint configure files enables pylint to give meaningful feedback while working with valid processing.py sketches, which use the Processing API as functions and variable names.
+
 [MESSAGES CONTROL]
-disable=undefined-variable
+
+# disable=undefined-variable
+
+
+## Good variable names and additional-builtins as defined in processing.py:
+## -  /runtime/src/jycessing/core.py
+## -  /runtime/src/jycessing/PAppletJythonDriver.java
+## ...and in Processing (Java):
+## -  /core/src/processing/core/PConstants.java
+
+[BASIC]
+
+good-names=acos, alpha, ambient, ambientLight, append, applyMatrix, arc, arrayCopy, asin, atan, atan2, background, beginCamera, beginContour, beginPGL, beginRaw, beginRecord, beginShape, bezier, bezierDetail, bezierPoint, bezierTangent, bezierVertex, binary, blend, blendColor, blendMode, blue, box, brightness, camera, ceil, clear, clip, color, colorMode, concat, constrain, copy, cos, createFont, createGraphics, createImage, createInput, createOutput, createReader, createShape, createWriter, cursor, curve, curveDetail, curvePoint, curveTangent, curveTightness, curveVertex, day, debug, degrees, delay, directionalLight, displayDensity, dist, ellipse, ellipseMode, emissive, endCamera, endContour, endPGL, endRaw, endRecord, endShape, exit, exp, expand, fill, floor, frameRate, frustum, fullScreen, get, green, hex, hint, hour, hue, image, imageMode, join, launch, lerp, lightFalloff, lights, lightSpecular, line, link, loadBytes, loadFont, loadImage, loadJSONArray, loadJSONObject, loadPixels, loadShader, loadShape, loadStrings, loadTable, loadXML, log, loop, mag, match, matchAll, millis, minute, modelX, modelY, modelZ, month, nf, nfc, nfp, nfs, noClip, noCursor, noFill, noise, noiseDetail, noiseSeed, noLights, noLoop, norm, normal, noSmooth, noStroke, noTint, open, ortho, PApplet, parseXML, PConstants, perspective, PFont, PGraphics, PImage, pixelDensity, PMatrix, PMatrix2D, PMatrix3D, point, pointLight, popMatrix, popStyle, pow, printArray, printCamera, printMatrix, printProjection, PShape, PShapeOBJ, PShapeSVG, PStyle, PSurface, PVector, quad, quadraticVertex, radians, random, randomGaussian, randomSeed, rect, rectMode, red, redraw, requestImage, resetMatrix, resetShader, reverse, rotate, rotateX, rotateY, rotateZ, saturation, save, saveBytes, saveFrame, saveJSONArray, saveJSONObject, saveStream, saveStrings, saveTable, saveXML, scale, screenX, screenY, screenZ, second, selectFolder, selectInput, selectOutput, shader, shape, shapeMode, shearX, shearY, shininess, shorten, sin, size, sketchPath, smooth, sort, specular, sphere, sphereDetail, splice, split, splitTokens, spotLight, sq, sqrt, stroke, strokeCap, strokeJoin, strokeWeight, subset, tan, textAlign, textAscent, textDescent, textFont, textLeading, textMode, textSize, texture, textureMode, textureWrap, textWidth, this, thread, tint, translate, triangle, trim, unbinary, unhex, updatePixels, vertex, year, alpha blue, brightness, filter, green, hue, keyPressed, lerpColor, map, mouseButton, mousePressed, red, saturation, set, text
+
+## Excluded from core.py either because they are processing built-ins,
+## or defined in PAppletJythonDriver.java, or unimplemented:
+## -  abs, exec, filter, lerpColor, map, max, min, print, println, round, text
+
+## Built-in but still linted:
+## -  println -- use print instead
+
+[VARIABLES]
+
+additional-builtins=key, keyCode, ADD, ALPHA, ALT, AMBIENT, ARC, ARGB, ARROW, BACKSPACE, BASELINE, BEVEL, BEZIER_VERTEX, BLEND, BLUR, BOTTOM, BOX, BREAK, BURN, CENTER, CHATTER, CHORD, CLAMP, CLOSE, CODED, COMPLAINT, CONTROL, CORNER, CORNERS, CROSS, CURVE_VERTEX, CUSTOM, DARKEST, DEG_TO_RAD, DELETE, DIAMETER, DIFFERENCE, DILATE, DIRECTIONAL, DISABLE_ASYNC_SAVEFRAME, DISABLE_BUFFER_READING, DISABLE_DEPTH_MASK, DISABLE_DEPTH_SORT, DISABLE_DEPTH_TEST, DISABLE_KEY_REPEAT, DISABLE_OPENGL_ERRORS, DISABLE_OPTIMIZED_STROKE, DISABLE_STROKE_PERSPECTIVE, DISABLE_STROKE_PURE, DISABLE_TEXTURE_MIPMAPS, DODGE, DOWN, DXF, ELLIPSE, ENABLE_ASYNC_SAVEFRAME, ENABLE_BUFFER_READING, ENABLE_DEPTH_MASK, ENABLE_DEPTH_SORT, ENABLE_DEPTH_TEST, ENABLE_KEY_REPEAT, ENABLE_OPENGL_ERRORS, ENABLE_OPTIMIZED_STROKE, ENABLE_STROKE_PERSPECTIVE, ENABLE_STROKE_PURE, ENABLE_TEXTURE_MIPMAPS, ENTER, EPSILON, ERODE, ESC, EXCLUSION, FX2D, GIF, GRAY, GROUP, HALF_PI, HAND, HARD_LIGHT, HINT_COUNT, HSB, IMAGE, INVERT, JAVA2D, JPEG, LANDSCAPE, LEFT, LIGHTEST, LINE, LINES, LINE_LOOP, LINE_STRIP, LINUX, MACOSX, MAX_FLOAT, MAX_INT, MIN_FLOAT, MIN_INT, MITER, MODEL, MODELVIEW, MOVE, MULTIPLY, NORMAL, OPAQUE, OPEN, OPENGL, ORTHOGRAPHIC, OTHER, OVERLAY, P2D, P3D, PATH, PDF, PERSPECTIVE, PI, PIE, POINT, POINTS, POLYGON, PORTRAIT, POSTERIZE, PROBLEM, PROJECT, PROJECTION, QUAD, QUADRATIC_VERTEX, QUADS, QUAD_STRIP, QUARTER_PI, RADIUS, RAD_TO_DEG, RECT, REPEAT, REPLACE, RETURN, RGB, RIGHT, ROUND, SCREEN, SHAPE, SHIFT, SOFT_LIGHT, SPAN, SPHERE, SPOT, SQUARE, SUBTRACT, SVG, TAB, TARGA, TAU, TEXT, THIRD_PI, THRESHOLD, TIFF, TOP, TRIANGLE, TRIANGLES, TRIANGLE_FAN, TRIANGLE_STRIP, TWO_PI, UP, VERTEX, WAIT, WHITESPACE, WINDOWS, displayHeight, displayWidth, focused, frame, frameCount, frameRate, g, height, line, mouseX, mouseY, pixels, pmouseX, pmouseY, width
