@@ -1,20 +1,27 @@
+"""Utility functions for paneler.
+Used to load data, save rendered output, and preview results.
+Also contains wrappers for picking and status functions.
+"""
+
 from __future__ import print_function
 import os
 import pickle
 
-# 'sketchPath()+'/input/index.html'
 def exists(filename, path=''):
+    """Load panelcode file as string."""
     if path == '':
         path = sketchPath() + '/data/output/'
     return os.path.exists(path+filename)
 
 def load_str(filename='panelcode.txt', path=''):
+    """Load panelcode file as string."""
     if path == '':
         path = sketchPath() + '/data/input/'
     strings = loadStrings(path + filename)
     return strings
 
 def pickle_dump(obj, filename, path=''):
+    """Save (serialize) panelcode object to a pickle file."""
     if path == '':
         path = sketchPath() + '/data/output/'
     try:
@@ -26,6 +33,7 @@ def pickle_dump(obj, filename, path=''):
         raise
 
 def pickle_load(filename, path=''):
+    """Load pickle file to panelcode object."""
     if path == '':
         path = sketchPath() + '/data/output/'
     try:
@@ -37,6 +45,7 @@ def pickle_load(filename, path=''):
         raise
 
 def pickle_remove(filename, path=''):
+    """Remove pickle file from disk."""
     if path == '':
         path = sketchPath() + '/data/output/'
     try:
@@ -46,16 +55,18 @@ def pickle_remove(filename, path=''):
         print(err)
 
 def preview(filename='index.html', path=''):
+    """Open file preview in default web browser (on macOS)."""
     if path == '':
         path = sketchPath() + '/data/output/'
     os.system('open '+ path + filename)
 
 def save_page(file_str, filename='index.html', path=''):
+    """Save page to output directory."""
     if path == '':
         path = sketchPath() + '/data/output/'
     filepath = path + filename
     saveStrings(filepath, [file_str])
-    pass
-    
+
 def status():
-    println(sketchPath())
+    """Print working status to console."""
+    print(sketchPath())
