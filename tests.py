@@ -46,16 +46,23 @@ def run(case=None, out=sys.stdout):
                             resultclass=None).run(suite)
 
 def phtml_equal(pcode_str1, pcode_str2, parselevel=parser.root):
+    """For two pcode strings, test if they render the same html string."""
     pcode_obj1 = parser.parse(pcode_str1, parselevel)
     pcode_obj2 = parser.parse(pcode_str2, parselevel)
     pcode_html1 = render.pobj_to_html5_ccs3_grid(pcode_obj1)
     pcode_html2 = render.pobj_to_html5_ccs3_grid(pcode_obj2)
-    return (pcode_html1 == pcode_html2)
+    return pcode_html1 == pcode_html2
 
 def item_pair_equalities(test_items):
-    test_pairs = itertools.combinations (test_items, 2)
+    """
+    For a set of pcode strings, check that each renders equal to every other.
+    This is inefficient -- better to render the first string
+    then check each remaining item string once against it.
+    This could be useful for a comparator other than equality.
+    """
+    test_pairs = itertools.combinations(test_items, 2)
     for item1, item2 in (test for test in test_pairs):
-        yield(phtml_equal(item1, item2))
+        yield phtml_equal(item1, item2)
 
 class TestEnvironment(unittest.TestCase):
     """Confirm presence of default named directories and files."""
@@ -82,7 +89,7 @@ class TestPickling(unittest.TestCase):
         utils.pickle_dump(pcode_obj, 'test.pickle')
         self.assertTrue(utils.exists('test.pickle'))
         pcode_obj2 = utils.pickle_load('test.pickle')
-        self.assertEqual(pcode_obj.dump(), pcode_obj2.dump())
+        self.assertTrue(pcode_obj.dump(), pcode_obj2.dump())
         utils.pickle_remove('test.pickle')
         self.assertFalse(os.path.exists('test.pickle'))
 
@@ -129,12 +136,17 @@ class TestRenderHTML(unittest.TestCase):
     def test_simple_rows_commutative(self):
         """Simple row addition is commutative: 1+2 = 2+1."""
         test_sets = []
-        test_sets.append([('1+2', '2+1'), ('2+5', '5+2'), ('10+2', '2+10'), ('1+2+3', '2+3+1'), ('1+2+3', '3+2+1')])
+        test_sets.append([('1+2', '2+1'), ('2+5', '5+2'), ('10+2', '2+10'),
+                          ('1+2+3', '2+3+1'), ('1+2+3', '3+2+1')])
         ## build a commutative test set for each level delimiter
-        test_sets.append([('1+2,3', '2+1,3'), ('2+5,3', '5+2,3'), ('10+2,3', '2+10,3'), ('11+12,3', '12+11,3')])
-        test_sets.append([('1+2;3', '2+1;3'), ('2+5;3', '5+2;3'), ('10+2;3', '2+10;3'), ('11+12;3', '12+11;3')])
-        test_sets.append([('1+2|3', '2+1|3'), ('2+5|3', '5+2|3'), ('10+2|3', '2+10|3'), ('11+12|3', '12+11|3')])
-        test_sets.append([('1+2@3', '2+1@3'), ('2+5@3', '5+2@3'), ('10+2@3', '2+10@3'), ('11+12@3', '12+11@3')])
+        test_sets.append([('1+2,3', '2+1,3'), ('2+5,3', '5+2,3'), ('10+2,3', '2+10,3'),
+                          ('11+12,3', '12+11,3')])
+        test_sets.append([('1+2;3', '2+1;3'), ('2+5;3', '5+2;3'), ('10+2;3', '2+10;3'),
+                          ('11+12;3', '12+11;3')])
+        test_sets.append([('1+2|3', '2+1|3'), ('2+5|3', '5+2|3'), ('10+2|3', '2+10|3'),
+                          ('11+12|3', '12+11|3')])
+        test_sets.append([('1+2@3', '2+1@3'), ('2+5@3', '5+2@3'), ('10+2@3', '2+10@3'),
+                          ('11+12@3', '12+11@3')])
         for test_pairs in test_sets:
             for item1, item2 in (pair for pair in test_pairs):
                 self.assertTrue(phtml_equal(item1, item2))
@@ -143,9 +155,12 @@ class TestRenderHTML(unittest.TestCase):
         """All levels above adjascent units are not commutative."""
         test_sets = []
         ## build a non-commutative test set for each level delimiter
-        test_sets.append([('1;2', '2;1'), ('2;5', '5;2'), ('10;2', '2;10'), ('1;2;3', '2;3;1'), ('1;2;3', '3;2;1')])
-        test_sets.append([('1|2', '2|1'), ('2|5', '5|2'), ('10|2', '2|10'), ('1|2|3', '2|3|1'), ('1|2|3', '3|2|1')])
-        test_sets.append([('1@2', '2@1'), ('2@5', '5@2'), ('10@2', '2@10'), ('1@2@3', '2@3@1'), ('1@2@3', '3@2@1')])
+        test_sets.append([('1;2', '2;1'), ('2;5', '5;2'), ('10;2', '2;10'),
+                          ('1;2;3', '2;3;1'), ('1;2;3', '3;2;1')])
+        test_sets.append([('1|2', '2|1'), ('2|5', '5|2'), ('10|2', '2|10'),
+                          ('1|2|3', '2|3|1'), ('1|2|3', '3|2|1')])
+        test_sets.append([('1@2', '2@1'), ('2@5', '5@2'), ('10@2', '2@10'),
+                          ('1@2@3', '2@3@1'), ('1@2@3', '3@2@1')])
         for test_pairs in test_sets:
             for item1, item2 in (pair for pair in test_pairs):
                 self.assertFalse(phtml_equal(item1, item2))
@@ -192,11 +207,14 @@ class TestRenderHTML(unittest.TestCase):
 
     def test_level_inequalities(self):
         """No level join/division should be equivalent to any other."""
-        for result in item_pair_equalities(['1+1', '1,1', '1_1', '1;1', '1|1', '1@1']):
+        for result in item_pair_equalities(['1+1', '1,1', '1_1',
+                                            '1;1', '1|1', '1@1']):
             self.assertFalse(result)
-        for result in item_pair_equalities(['2+3', '2,3', '2_3', '2;3', '2|3', '2@3']):
+        for result in item_pair_equalities(['2+3', '2,3', '2_3',
+                                            '2;3', '2|3', '2@3']):
             self.assertFalse(result)
-        for result in item_pair_equalities(['9+10+11', '9,10,11', '9_10_11', '9;10;11', '9|10|11', '9@10@11']):
+        for result in item_pair_equalities(['9+10+11', '9,10,11', '9_10_11',
+                                            '9;10;11', '9|10|11', '9@10@11']):
             self.assertFalse(result)
 
     def test_whitespace_linebreaks(self):
@@ -215,6 +233,7 @@ class TestRenderHTML(unittest.TestCase):
                 self.assertTrue(result)
 
     def test_whitespace_spaces(self):
+        """Spaces should not affect level delimiters."""
         test_items = ['1+2', ' 1+2', '1 +2', '1+ 2', '1+2 ', '1 + 2', ' 1 + 2 ']
         test_sets = []
         test_sets.append(test_items)
@@ -229,6 +248,7 @@ class TestRenderHTML(unittest.TestCase):
                 self.assertTrue(result)
 
     def test_whitespace_tabs(self):
+        """Tabs should not affect level delimiters."""
         test_items = ['1+2', '\t1+2', '1\t+2', '1+\t2', '1+2\t', '1\t+\t2', '\t1\t+\t2\t']
         test_sets = []
         test_sets.append(test_items)
