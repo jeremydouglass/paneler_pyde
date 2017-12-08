@@ -1,14 +1,32 @@
+"""Panelcode parsing functions.
+Converts code strings into object trees for rendering.
+Based on an implementation of the EBNF using pyparsing.
+"""
 import pyparsing as pp
+
+# pylint: disable=bad-whitespace
+# pylint: disable=invalid-name
+# pylint: disable=line-too-long
 
 ## options and attributes
 
-attr_word      = pp.Suppress(pp.Optional(pp.Literal("."))) + pp.Word(pp.alphas, pp.alphanums+'-') # https://pythonhosted.org/pyparsing/pyparsing.OneOrMore-class.html
-attr_list      = pp.ZeroOrMore(attr_word)
-panelgroupopts = (pp.Suppress(pp.Literal("{")) + pp.Optional(attr_list) + pp.Suppress(pp.Literal("}"))).setResultsName('panelgroupopts', listAllMatches=True)
-layoutopts     = (pp.Suppress(pp.Literal("{:")) + pp.Optional(attr_list) + pp.Suppress(pp.Literal("}"))).setResultsName('layoutopts', listAllMatches=True)
-spreadopts     = (pp.Suppress(pp.Literal("{::")) + pp.Optional(attr_list) + pp.Suppress(pp.Literal("}"))).setResultsName('spreadopts', listAllMatches=True)
-galleryopts    = (pp.Suppress(pp.Literal("{:::")) + pp.Optional(attr_list) + pp.Suppress(pp.Literal("}"))).setResultsName('galleryopts', listAllMatches=True)
-pcodeopts      = (pp.Suppress(pp.Literal("{::::")) + pp.Optional(attr_list) + pp.Suppress(pp.Literal("}"))).setResultsName('pcodeopts', listAllMatches=True)
+attr_word    = pp.Suppress(pp.Optional(pp.Literal("."))) + pp.Word(pp.alphas, pp.alphanums+'-')
+attr_list    = pp.ZeroOrMore(attr_word)
+panelgroupopts = (pp.Suppress(pp.Literal("{")) +
+                  pp.Optional(attr_list) +
+                  pp.Suppress(pp.Literal("}"))).setResultsName('panelgroupopts', listAllMatches=True)
+layoutopts  = (pp.Suppress(pp.Literal("{:")) +
+               pp.Optional(attr_list) +
+               pp.Suppress(pp.Literal("}"))).setResultsName('layoutopts', listAllMatches=True)
+spreadopts  = (pp.Suppress(pp.Literal("{::")) +
+               pp.Optional(attr_list) +
+               pp.Suppress(pp.Literal("}"))).setResultsName('spreadopts', listAllMatches=True)
+galleryopts = (pp.Suppress(pp.Literal("{:::")) +
+               pp.Optional(attr_list) +
+               pp.Suppress(pp.Literal("}"))).setResultsName('galleryopts', listAllMatches=True)
+pcodeopts   = (pp.Suppress(pp.Literal("{::::")) +
+               pp.Optional(attr_list) +
+               pp.Suppress(pp.Literal("}"))).setResultsName('pcodeopts', listAllMatches=True)
 
 ## panelgroups
 
@@ -18,18 +36,28 @@ newrow         = pp.Literal(",")
 groupseparator = pp.Group( newcol ^ newrow )
 groupunit      = pp.Group(numrow + pp.OneOrMore(attr_word) ^ numrow ^ attr_word)
 groupterms     = pp.Suppress(pp.Optional(pp.Suppress(pp.Literal("(")))) + pp.Group(groupunit + pp.ZeroOrMore( groupseparator + groupunit )).setResultsName('terms', listAllMatches=True) + pp.Suppress(pp.Optional(pp.Suppress(pp.Literal(")"))))
-panelgroup     = pp.Group((groupterms ^ groupunit) + pp.Optional(panelgroupopts)).setResultsName('panelgroup', listAllMatches=True)
+panelgroup     = pp.Group((groupterms ^ groupunit) +
+                          pp.Optional(panelgroupopts)).setResultsName('panelgroup', listAllMatches=True)
 
 ## levels of organization
 
-layout         = pp.Group(pp.delimitedList(panelgroup, delim="_") + pp.Optional(layoutopts)).setResultsName('layout', listAllMatches=True)
-spread         = pp.Group(pp.delimitedList(layout, delim="|") + pp.Optional(spreadopts)).setResultsName('spread', listAllMatches=True) # ++
-gallery        = pp.Group(pp.delimitedList(spread, delim=";") + pp.Optional(galleryopts)).setResultsName('gallery', listAllMatches=True)
-root           = pp.Group(pp.delimitedList(gallery, delim="@") + pp.Optional(pcodeopts)).setResultsName('pcode', listAllMatches=True) # ;;
+layout         = pp.Group(pp.delimitedList(panelgroup, delim="_") +
+                          pp.Optional(layoutopts)).setResultsName('layout', listAllMatches=True)
+spread         = pp.Group(pp.delimitedList(layout, delim="|") +
+                          pp.Optional(spreadopts)).setResultsName('spread', listAllMatches=True) # ++
+gallery        = pp.Group(pp.delimitedList(spread, delim=";") +
+                          pp.Optional(galleryopts)).setResultsName('gallery', listAllMatches=True)
+root           = pp.Group(pp.delimitedList(gallery, delim="@") +
+                          pp.Optional(pcodeopts)).setResultsName('pcode', listAllMatches=True) # ;;
 
 def parse(code_str, parselevel):
+    """Parse panelcode string at level parselevel.
+    Levels are parser.root, parser.gallery etc.
+    Renderers may assume a particular top-level,
+    e.g. parser.root.
+    """
     try:
         result = parselevel.parseString(code_str, parseAll=True)
         return result
-    except pp.ParseException as e:
-        raise e
+    except pp.ParseException as err:
+        raise err
