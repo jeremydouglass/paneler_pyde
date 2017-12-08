@@ -1,3 +1,4 @@
+import parser
 import templates
 import tests
 import utils
@@ -21,6 +22,9 @@ def process(pcode_filename, template_filename, result_filename):
     ## load panelcode input file and merge into one string
     pcode_str = utils.load_str(pcode_filename)
     pcode_str = '\n'.join(pcode_str)
+    
+    pcode_obj = parser.parse(pcode_str, parser.root)
+    print(pcode_obj)
 
     ## render input through template into output html
     html_str = tmpl.render(panelcode=pcode_str)
