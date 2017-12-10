@@ -9,7 +9,10 @@
 
   <body>
 
-{{ panelcode }}
-
+    <h1>{{ pagetitle }}</h1>
+     <p>{{ datetime }}</p>
+{% for item in panelcode %}
+     {{ item }}
+{% endfor %}
   </body>
 </html>
