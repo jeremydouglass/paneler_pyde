@@ -164,6 +164,9 @@ def keyPressed():
         view=True
     if key == 'q':
         exit(); return
+    ## Copy data input name to html output name
+    if key == 's':
+        cfg['save']['file'] = cfg['data']['file'] + '.html'
     if key == '?':
         print('Run all tests.')
         tests.run() # run all tests
