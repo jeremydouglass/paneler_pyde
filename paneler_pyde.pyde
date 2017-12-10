@@ -141,9 +141,14 @@ def process():
 
 def keyPressed():
     """Key events: respond to key input events each frame."""
+    global view
     if key == ' ':
         print('Process and render data.')
         process()
+        if view==False:
+            ## preview html page file in web browser
+            utils.preview(cfg['save']['path'] + cfg['save']['file'])
+            view=True
     if key == 'd':
         print('Select a data file.')
         selectInput("Select a data file:", "fileSelected")
