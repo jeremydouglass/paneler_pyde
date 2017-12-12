@@ -177,9 +177,12 @@ def processItem(item, **kwargs):
     ## parse panelcode to object
     pcode_objs = []
     for pcode_str in pcode_list:
-        pcode_obj = parser.parse(pcode_str, parser.root)
-        pcode_objs.append(pcode_obj)
-
+        try:
+            pcode_obj = parser.parse(pcode_str, parser.root)
+            pcode_objs.append(pcode_obj)
+        except parser.pp.ParseException as err:
+            bp.errors.append((item, err))
+            pass
     ## render panelcode object to html
     html_results = []
     for pcode_obj in pcode_objs:
@@ -231,6 +234,10 @@ def keyPressed():
     if key == 'd':
         print('Select a data file.')
         selectInput("Select a data file:", "fileSelected")
+    if key == 'e':
+        print('\n')
+        for error in bp.errors:
+            print('\n', error)
     if key == 't':
         print('Select a template.')
         selectInput("Select a template:", "templateSelected")
