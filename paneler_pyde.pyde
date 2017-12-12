@@ -10,7 +10,6 @@ import utils
 from batch import BatchProcess
 from ui import TextList, Button
 
-# pylint: disable=bad-whitespace
 # pylint: disable=invalid-name
 
 ## Batch Processor
@@ -21,14 +20,14 @@ bp = None
 
 ui_list = []
 
-button_list = []
-
 ## File configuration
 
+# pylint: disable=bad-whitespace
 cfg = { 'data' : { 'path': '/data/input/'    , 'file' : 'data.panelcode.txt' },
         'tmpl' : { 'path': '/data/templates' , 'file' : 'gallery_css3.html'  },
         'save' : { 'path': '/data/output/'   , 'file' : 'index.html' }
       }
+# pylint: enable=bad-whitespace
 
 ## Has this config been previewed in the browser? If so,
 ## view = True so that re-running doesn't generate endless
@@ -40,7 +39,7 @@ def setup():
     """Set up sketch."""
     size(300, 350)
     frameRate(30)
-    
+
     reset()
 
 def reset():
@@ -52,7 +51,7 @@ def reset():
 
     ## user interface
     global ui_list
-    
+
     ## label
     b_title = Button("PANELER", 0, -4, width, 36)
     b_title.textsize = 18
@@ -69,14 +68,17 @@ def reset():
         ## Buttons
     ## with attached call Processing dialog types + callbacks
 
-    b_add_file = Button("+file",      0,         96, width/4, 24,
-                        calltype='selectInput',  callback='bpAddFileSelected')
-    b_add_fold = Button("+folder",  width/4,   96, width/4, 24,
-                        calltype='selectFolder', callback='bpAddFolderSelected')
+    b_add_file = Button("+file", 0, 96, width/4, 24,
+                        calltype='selectInput',
+                        callback='bpAddFileSelected')
+    b_add_fold = Button("+folder", width/4, 96, width/4, 24,
+                        calltype='selectFolder',
+                        callback='bpAddFolderSelected')
     b_add_tree = Button("+tree", 2*width/4, 96, width/4, 24,
-                        calltype='selectFolder', callback='bpAddTreeSelected')
-    b_clear    = Button("clear",      3*width/4, 96, width/4, 24,
-                        calltype='', callback=bp.clear)
+                        calltype='selectFolder',
+                        callback='bpAddTreeSelected')
+    b_clear = Button("clear", 3*width/4, 96, width/4, 24,
+                     calltype='', callback=bp.clear)
 
     ## Template button
     b_temp = Button("template", 0, 120, width/3, 24,
@@ -85,8 +87,8 @@ def reset():
     b_temp.no_change()
 
     ## Reset button
-    b_reset    = Button("RESET",      5*width/6-8,  5, width/6, 20,
-                        calltype='', callback=reset)
+    b_reset = Button("RESET", 5*width/6-8, 5, width/6, 20,
+                     calltype='', callback=reset)
     b_reset.textsize = 10
     if frameCount > 0: ## indicate a successful reset
         b_reset.click_time = 30
@@ -94,7 +96,7 @@ def reset():
     ## Run button
     ## populates the process queue, which is consumed
     ## each frame by draw when non-empty.
-    b_run      = Button("RUN",        2*width/3,  height-32, width/3, 32, calltype='', callback=bp.queue)
+    b_run = Button("RUN", 2*width/3, height-32, width/3, 32, calltype='', callback=bp.queue)
     b_run.bgcolor_click = color(255, 64, 64)
 
     ## UI components list
@@ -136,7 +138,8 @@ def processItem(item, **kwargs):
     cfg['data']['file'] = utils.os.path.basename(item)
     ## ...leave standard save path in place
     cfg['save']['file'] = cfg['data']['file'] + '.html'
-    print('Rendering:  {0}\n template:  {1}\ninto file: {2}'.format(cfg['data']['file'], cfg['tmpl']['file'], cfg['save']['file']))
+    print('Rendering:  {0}\n template:  {1}\ninto file: {2}'.format(
+        cfg['data']['file'], cfg['tmpl']['file'], cfg['save']['file']))
 
     ## load template
     template = cfg['tmpl']['file']
@@ -173,7 +176,7 @@ def processItem(item, **kwargs):
     ## gallery splitting
     if '@' in pcode_str:
         pcode_list = [gallery for pcode_block in pcode_list for gallery in pcode_block.split('@')]
-    
+
     ## parse panelcode to object
     pcode_objs = []
     for pcode_str in pcode_list:
@@ -182,7 +185,6 @@ def processItem(item, **kwargs):
             pcode_objs.append(pcode_obj)
         except parser.pp.ParseException as err:
             bp.errors.append((item, err))
-            pass
     ## render panelcode object to html
     html_results = []
     for pcode_obj in pcode_objs:
@@ -198,6 +200,7 @@ def processItem(item, **kwargs):
     # print(html_page_str)
 
     ## save html page to file
+    ## ...leave standard save path in place
     utils.save_page(html_page_str, cfg['save']['file'])
 
     ## launch preview in browser if not already opened
@@ -206,7 +209,7 @@ def processItem(item, **kwargs):
         ## preview html page file in web browser
         print('Launch preview: ' + cfg['save']['file'])
         utils.preview(cfg['save']['file'])
-        view=True
+        view = True
 
     global ui_list
     for element in ui_list:
@@ -275,6 +278,12 @@ def mousePressed():
 ##
 ## 1. be at the top level of the sketch
 ## 2. take only 'selection' as an arg
+##
+## These are not implemented as lambdas
+## in order to maintain compatability
+## with the function-name-as-string call
+## method of the Processing(Java) API
+## in selectInput() and selectFolder().
 ########################################
 
 def bpAddFileSelected(selection):
