@@ -64,7 +64,7 @@ class Button(object):
     """A simple button."""
 
     def __init__(self, label, x, y, w, h, click_duration=30,
-                 callback='', call='', info='', margin=2):
+                 calltype='', callback='', info='', margin=2):
         self.label = label
         self.x = x
         self.y = y
@@ -72,7 +72,7 @@ class Button(object):
         self.h = h
         self.click_duration = click_duration
         self.callback = callback
-        self.call = call
+        self.calltype = calltype
         self.info = info
         self.m = margin
 
@@ -124,10 +124,10 @@ class Button(object):
             if self.click_time == 0:
                 ## start timer for click display
                 self.click_time = self.click_duration
-                if self.call == 'selectInput':
+                if self.calltype == 'selectInput':
                     print('Select a data file:')
                     selectInput("Select a data file:", self.callback)
-                elif self.call == 'selectFolder':
+                elif self.calltype == 'selectFolder':
                     print('Select a data file:')
                     selectFolder("Select a data file:", self.callback)
                 else:
