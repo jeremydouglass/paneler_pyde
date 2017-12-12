@@ -13,6 +13,7 @@ class BatchProcess(object):
         self.source_folders = set()
         self.source_trees = set()
         self.tasks = []
+        self.errors = []
         self.template = {'path': '/data/templates', 'file' : 'gallery_css3.html'}
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -28,6 +29,13 @@ class BatchProcess(object):
         """Clear source lists and current task queue."""
         self.clear_sources()
         self.clear_tasks()
+        self.clear_errors()
+        ## bump PDE console text
+        for i in range(20):
+            print '\n'
+
+    def clear_errors(self):
+        self.errors = []
 
     def clear_sources(self):
         """Clear source lists."""
@@ -39,6 +47,12 @@ class BatchProcess(object):
         """Clear current task queue."""
         self.tasks = []
 
+    def get_errors(self):
+        result = []
+        for error in self.errors:
+            result.append(os.path.basename(error[0]) + ':\n   ' + str(error[1]) + '\n')
+        return result
+    
     def get_template(self):
         """Display template string in UI.
            Template is stored in a split relative directory
@@ -66,10 +80,10 @@ class BatchProcess(object):
         if self.tasks:
             fname = self.tasks.pop(0)
             self.process(fname, **kwargs)
-            delay(1000)
 
     def queue(self):
         """Resolve all source items and copy into tasks queue."""
+        self.clear_errors()
         self.tasks = self.source_listing()
 
     def sources(self):
