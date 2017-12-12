@@ -285,28 +285,3 @@ def bpAddTreeSelected(selection):
 def bpAddTreeFilesSelected(selection):
     """Redirect results of user file dialog."""
     bp.add_tree_files(selection.getAbsolutePath())
-
-def fileSelectedData(selection):
-    """Updates data file cfguration from a user file dialog."""
-    fileSelected(selection, 'data')
-
-def fileSelectedTemplate(selection):
-    """Updates template file cfguration from a user file dialog."""
-    fileSelected(selection, 'tmpl')
-
-def fileSelectedSave(selection):
-    """Updates save file cfguration from a user file dialog."""
-    fileSelected(selection, 'save')
-
-def fileSelected(selection, cfg_key):
-    """Load user-selected file into a config key."""
-    if selection is None:
-        print("Window was closed or the user hit cancel.")
-    else:
-        print("User selected " + selection.getAbsolutePath())
-        newpath = utils.os.path.dirname(selection.getAbsolutePath())
-        newfile = utils.os.path.basename(selection.getAbsolutePath())
-        cfg[cfg_key] = { 'path' : newpath , 'file' : newfile }
-        ## reset view due to new file config
-        global view
-        view = False
