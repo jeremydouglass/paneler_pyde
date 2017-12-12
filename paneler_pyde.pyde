@@ -113,7 +113,15 @@ def process():
     ## preview (w/ flatten unicode)
     # print(pcode_str..encode('ascii', 'replace') + '\n')
 
-    ## split on delimiter
+    ## embedded code blocks:
+    ## split on markdown-style codeblock begin-end line delimiters
+    ## and take every second item
+    if '```' in pcode_str:
+        pcode_list = (pcode_str+'\n').split('\n```')[1::2]
+    else:
+        pcode_list = [pcode_str]
+
+    ## gallery splitting
     if '@' in pcode_str:
         pcode_list = [gallery for pcode_block in pcode_list for gallery in pcode_block.split('@')]
     
