@@ -105,15 +105,18 @@ def process():
 
     ## merge into one string
     pcode_str = '\n'.join(data)
+
     ## remove bottom notes
-    pcode_str = pcode_str.split("---")[0]
+    if '\n---' in pcode_str:
+        pcode_str = pcode_str.split('\n---')[0]
 
     ## preview (w/ flatten unicode)
     # print(pcode_str..encode('ascii', 'replace') + '\n')
 
     ## split on delimiter
-    pcode_list = pcode_str.split('@')
-
+    if '@' in pcode_str:
+        pcode_list = [gallery for pcode_block in pcode_list for gallery in pcode_block.split('@')]
+    
     ## parse panelcode to object
     pcode_objs = []
     for pcode_str in pcode_list:
