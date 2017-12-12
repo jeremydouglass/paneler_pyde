@@ -61,6 +61,9 @@ def setup():
     global button_list
     button_list = [b_title, b_data, b_temp, b_out, b_run]
 
+    ## Copy template styles dir to output if it doesn't exist
+    utils.copy_styles()
+
 def draw():
     """Visual UI."""
     for b in button_list:

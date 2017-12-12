@@ -6,6 +6,24 @@ Also contains wrappers for picking and status functions.
 from __future__ import print_function
 import os
 import pickle
+import shutil
+
+def copy_styles():
+    src = sketchPath() + '/styles'
+    dest = sketchPath() + '/data/output/styles'
+    try:
+        shutil.copytree(src, dest)
+    # eg. src and dest are the same file
+    except shutil.Error as e:
+        # print('Error: %s' % e)
+        pass
+    # eg. source or destination doesn't exist
+    except IOError as e:
+        # print('Error: %s' % e.strerror)
+        pass
+    except OSError as e:
+        # print('Error: %s' % e.strerror)
+        pass
 
 def exists(filename, path=''):
     """Load panelcode file as string."""
