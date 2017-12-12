@@ -98,6 +98,11 @@ def process():
     ## load template and data
     tmpl = templates.load(cfg['tmpl']['path'] , cfg['tmpl']['file'])
     data = utils.load_str(cfg['data']['file'])
+
+    ## strip comment lines
+    dataclean = utils.decomment(data, '#')
+    data = [dline for dline in dataclean]
+
     ## merge into one string
     pcode_str = '\n'.join(data)
     ## remove bottom notes
