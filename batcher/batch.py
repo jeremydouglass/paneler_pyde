@@ -58,7 +58,7 @@ class BatchProcess(object):
         and file name due convenience when working wtih
         the requirements of the Jinja2 API.
         """
-        return [self.template['path'] + self.template['file']]
+        return [self.template['path'] + '/' + self.template['file']]
 
     @classmethod
     def list_tree(cls, folder, ext='.txt'):
