@@ -158,13 +158,6 @@ def processItem(item, **kwargs):
     ## merge into one string
     pcode_str = '\n'.join(data)
 
-    ## remove bottom notes
-    if '\n---' in pcode_str:
-        pcode_str = pcode_str.split('\n---')[0]
-
-    ## preview (w/ flatten unicode)
-    # print(pcode_str..encode('ascii', 'replace') + '\n')
-
     ## embedded code blocks:
     ## split on markdown-style codeblock begin-end line delimiters
     ## and take every second item
@@ -172,10 +165,6 @@ def processItem(item, **kwargs):
         pcode_list = (pcode_str+'\n').split('\n```')[1::2]
     else:
         pcode_list = [pcode_str]
-
-    ## gallery splitting
-    if '@' in pcode_str:
-        pcode_list = [gallery for pcode_block in pcode_list for gallery in pcode_block.split('@')]
 
     ## parse panelcode to object
     pcode_objs = []
@@ -195,9 +184,6 @@ def processItem(item, **kwargs):
     ## wrap html in page template
     html_page_str = tmpl.render(panelcode=html_results, pagetitle=cfg['data']['file'],
                                 datetime=datetime.datetime.now())
-
-    ## preview html page contents
-    # print(html_page_str)
 
     ## save html page to file
     ## ...leave standard save path in place
