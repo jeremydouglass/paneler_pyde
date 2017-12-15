@@ -82,7 +82,7 @@ class Button(object):
         self.strokecolor = color(64)
         self.strokeweight = 1
         self.bgcolor = color(207, 221, 236)
-        self.bgcolor_over = color(207, 207, 255)
+        self.bgcolor_over = color(255, 255, 207)
         self.bgcolor_click = color(255, 221, 207)
         self.labelcolor = color(0)
         self.labelsize = 10

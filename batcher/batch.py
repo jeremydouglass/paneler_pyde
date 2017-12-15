@@ -2,9 +2,7 @@
 import os
 
 class BatchProcess(object):
-    """Manage a list of input and output files and/or folders
-       which are passed to a process.
-    """
+    """Manage input and output files and/or folders and pass to a process."""
 
     def __init__(self, process, **kwargs):
         self.cfg = {}
@@ -55,17 +53,16 @@ class BatchProcess(object):
     
     def get_template(self):
         """Display template string in UI.
-           Template is stored in a split relative directory
-           and file name due convenience when working wtih
-           the requirements of the Jinja2 API.
+        
+        Template is stored in a split relative directory
+        and file name due convenience when working wtih
+        the requirements of the Jinja2 API.
         """
         return [self.template['path'] + self.template['file']]
 
     @classmethod
     def list_tree(cls, folder, ext='.txt'):
-        """Return a list of (matching) absolute paths for a folder
-           and recursive subfolders.
-        """
+        """Return matching absolute paths for a folder and all subfolders."""
         results = []
         for root, folders, files in os.walk(folder): # pylint:disable = unused-variable
             for fname in files:
@@ -75,7 +72,8 @@ class BatchProcess(object):
 
     def next(self, **kwargs):
         """Process the next item in the tasks queue.
-           Works like an iterator that can be reset.
+        
+        Works like an iterator that can be reset.
         """
         if self.tasks:
             fname = self.tasks.pop(0)

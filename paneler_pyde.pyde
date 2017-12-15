@@ -7,8 +7,8 @@ import render
 import templates
 import tests
 import utils
-from batch import BatchProcess
-from ui import TextList, Button
+from batcher.batch import BatchProcess
+from batcher.ui import TextList, Button
 
 # pylint: disable=invalid-name
 
