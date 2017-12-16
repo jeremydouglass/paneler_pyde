@@ -25,15 +25,6 @@ def copy_styles():
         # print('Error: %s' % e.strerror)
         pass
         
-def decomment(item, delim):
-    for itemline in item:
-        seg = itemline.split(delim, 1)[0].strip()
-        if seg != '':
-            yield seg
-        else:
-            ## align line numbers in oarse error checking with original
-            yield ''
-
 def exists(filename, path=''):
     """Load panelcode file as string."""
     if path == '':
