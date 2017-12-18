@@ -10,8 +10,15 @@ import pyparsing as pp
 
 ## options and attributes
 
-attr_word    = pp.Suppress(pp.Optional(pp.Literal("."))) + pp.Word(pp.alphas, pp.alphanums+'-')
-attr_list    = pp.ZeroOrMore(attr_word)
+term = pp.Word(pp.alphas, pp.alphanums+'-')
+key = term
+equals = pp.Suppress('=')
+value = pp.Suppress("'") + pp.Combine(pp.OneOrMore(term), joinString=' ', adjacent=False) + pp.Suppress("'") | term
+kv_expr = pp.Suppress(pp.Optional(pp.Literal("."))) + pp.Group(key + equals + value)
+kv_word = pp.Suppress(pp.Optional(pp.Literal("."))) + pp.Group(pp.Regex(r"[a-zA-Z]+") + pp.Regex(r"[0-9]*"))
+attr_word    = pp.Suppress(pp.Optional(pp.Literal("."))) + term
+attr_list    = pp.ZeroOrMore( attr_word ^ kv_expr ^ kv_word )
+
 panelgroupopts = (pp.Suppress(pp.Literal("{")) +
                   pp.Optional(attr_list) +
                   pp.Suppress(pp.Literal("}"))).setResultsName('panelgroupopts', listAllMatches=True)
