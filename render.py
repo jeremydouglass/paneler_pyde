@@ -22,7 +22,6 @@ def opts_load(opts):
 def opts_render(opts, aw=True, kw=True, ke=False):
     """Render options for html."""
     attr_words, kv_words, kv_exprs = opts_load(opts)
-    print attr_words, kv_words, kv_exprs
     result = []
     if aw and attr_words:
         result.extend(attr_words)
@@ -59,10 +58,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
 
                 html_str.append('    <div class="layout ' + opts_render(layoutopts[0]) +'">')
                 try:
-                    print layoutopts[0]
                     aw, kvw, kve = opts_load(layoutopts[0])
-                    print aw, kvw, kve
-                    print kve
                     if 'label' in kve:
                         html_str.append('      <div class="label bottom">' + kve['label'] + '</div>')
                 except:
