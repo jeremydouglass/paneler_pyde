@@ -120,10 +120,10 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                             arg_add = []
                             for i, arg in enumerate(panel):
                                 ## intercept generic u for CSS styling and add count
-                                if arg.startswith('u'):
+                                if arg.startswith('u') and type(arg) is str:
                                     if len(arg) == 1:
                                         arg_add.append('u1')
-                                    elif len(arg) > 1:
+                                    elif len(arg) > 1 and arg[1:].isdigit():
                                         arg_add.append('u')
                                     ## note that the edge case e.g. u.u3 is not handled
                                     ## this will be fine for renderer (u_max=3, correct label)
@@ -142,7 +142,10 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                                 ## unencoded (multi)panels -- mutually exclusive with blanks
                                 elif 'u' in panel_args:
                                     ## ignore generic u and check for u# count
-                                    u_args = [int(arg[1:]) for arg in panel if (arg.startswith('u') and len(arg) > 1 )]
+                                    u_args = [int(arg[1:]) for arg in panel
+                                              if (arg.startswith('u')
+                                              and len(arg) > 1 )
+                                              and arg[1:].isdigit()]
                                     ## after loading u_args, add generic u in-place for CSS styling
                                     try:
                                         u_max = max(u_args)
