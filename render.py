@@ -1,5 +1,6 @@
 """Render panelcode into target output formats."""
 
+
 def opts_load(opts):
     """Retrieve lists of option types from an option ParseResult."""
     attr_words = []
@@ -11,13 +12,14 @@ def opts_load(opts):
         elif isinstance(opt, list):
             if len(opt) == 1:  # attr_word
                 attr_words.append(str(opt[0]))
-            elif len(opt) == 2 and not opt[1]: # attr_word
+            elif len(opt) == 2 and not opt[1]:  # attr_word
                 attr_words.append(str(opt[0]))
-            elif len(opt) == 2 and len(opt[0]) == 1 and str(opt[0]).isalpha() and str(opt[1]).isdigit(): # kv_word
+            elif len(opt) == 2 and len(opt[0]) == 1 and str(opt[0]).isalpha() and str(opt[1]).isdigit():  # kv_word
                 kv_words.append(str(opt[0]) + str(opt[1]))
-            else: # kv_expr
-=                kv_exprs[str(opt[0])] = " ".join(opt[1:])
+            else:  # kv_expr
+                kv_exprs[str(opt[0])] = " ".join(opt[1:])
     return attr_words, kv_words, kv_exprs
+
 
 def opts_render(opts, aw=True, kw=True, ke=False):
     """Render options for html."""
@@ -30,33 +32,34 @@ def opts_render(opts, aw=True, kw=True, ke=False):
     if ke and kv_exprs:
         kve_strs = []
         for i in kv_exprs.items():
-            kve_str.append(str(i[0]) + "=" + "'" + str(i[1]) + "'") 
+            kve_strs.append(str(i[0]) + "=" + "'" + str(i[1]) + "'")
         result.append(" ".join(kve_strs))
     return " ".join(result)
+
 
 def pobj_to_html5_ccs3_grid(pcode_obj):
     """ convert a parsed panelcode object into html for html5 + css3-grid rendering"""
     html_str = []
-    pcode = (pcode_obj.asDict())['pcode'][0] # no multiple pcode blocks - no delimiter
-    pcodeopts = pcode.pop('pcodeopts', [['']]) # {:::: } # pcodeopts = pcode['pcodeopts']
+    pcode = (pcode_obj.asDict())['pcode'][0]  # no multiple pcode blocks - no delimiter
+    pcodeopts = pcode.pop('pcodeopts', [['']])  # {:::: } # pcodeopts = pcode['pcodeopts']
 
     galleries = pcode.pop('gallery', '')
     for gallery in galleries:
-        galleryopts = gallery.pop('galleryopts', [['']]) # {::: }
-        html_str.append('<div class="gallery ' + opts_render(galleryopts[0]) +'">')
+        galleryopts = gallery.pop('galleryopts', [['']])  # {::: }
+        html_str.append('<div class="gallery ' + opts_render(galleryopts[0]) + '">')
 
         spreads = gallery.pop('spread', '')
         for spread in spreads:
-            spreadopts = spread.pop('spreadopts', [['']]) # {:: }
-            html_str.append('  <div class="spread ' + opts_render(spreadopts[0]) +'">')
+            spreadopts = spread.pop('spreadopts', [['']])  # {:: }
+            html_str.append('  <div class="spread ' + opts_render(spreadopts[0]) + '">')
 
             layouts = spread.pop('layout', '')
             for layout in layouts:
                 panelcounter = 0
-                panelskip = 0 # for blank x z panels
-                layoutopts = layout.pop('layoutopts', [['']]) # {: }
+                panelskip = 0  # for blank x z panels
+                layoutopts = layout.pop('layoutopts', [['']])  # {: }
 
-                html_str.append('    <div class="layout ' + opts_render(layoutopts[0]) +'">')
+                html_str.append('    <div class="layout ' + opts_render(layoutopts[0]) + '">')
                 try:
                     aw, kvw, kve = opts_load(layoutopts[0])
                     if 'label' in kve:
@@ -65,7 +68,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                     pass
                 panelgroups = layout.pop('panelgroup', '')
                 for panelgroup in panelgroups:
-                    panelgroupopts = panelgroup.pop('panelgroupopts', [['']]) # {}
+                    panelgroupopts = panelgroup.pop('panelgroupopts', [['']])  # {}
                     terms = panelgroup.pop('terms', [['']])
                     ## build row list -- grouped by commas and skipping +
                     row_list = [[]]
@@ -83,7 +86,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                         ## 0 indicates a blank / spacer panel
                         elif i[0] == '0':
                             i[0] = '1'
-                            i.append('x') # or z? based on setting?
+                            i.append('x')  # or z? based on setting?
                             row_list[-1].append(i)
                             ## setting panels to x or z will impact panel numbering and total count
                         ## just append anything else
@@ -140,7 +143,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                         ## set width to max
                         pgroup_width = max(row_lengths)
                     panelgroupopts[0][0] = panelgroupopts[0][0] + ' w' + str(pgroup_width)
-                    html_str.append('      <div class="panelgroup ' + panelgroupopts[0][0] +'">')
+                    html_str.append('      <div class="panelgroup ' + panelgroupopts[0][0] + '">')
 
                     for row in row_list:
                         ## load panel arguments
@@ -165,14 +168,14 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                                 ## blank panels
                                 if 'x' in panel_args or 'z' in panel_args:
                                     panelcounter += 1
-                                    panelskip +=1
-                                    html_str.append('        <div class="panel ' + pas +'">*</div>')
+                                    panelskip += 1
+                                    html_str.append('        <div class="panel ' + pas + '">*</div>')
                                 ## unencoded (multi)panels -- mutually exclusive with blanks
                                 elif 'u' in panel_args:
                                     ## ignore generic u and check for u# count
                                     u_args = [int(arg[1:]) for arg in panel
                                               if (arg.startswith('u')
-                                              and len(arg) > 1 )
+                                              and len(arg) > 1)
                                               and arg[1:].isdigit()]
                                     ## after loading u_args, add generic u in-place for CSS styling
                                     try:
@@ -181,21 +184,21 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                                         u_max = 1
                                     if u_max == 0:
                                         panelcounter += 1
-                                        panelskip +=1
-                                        html_str.append('        <div class="panel ' + pas +'">*</div>')
+                                        panelskip += 1
+                                        html_str.append('        <div class="panel ' + pas + '">*</div>')
                                     elif u_max == 1:
                                         panelcounter += 1
                                         label = str(panelcounter-panelskip)
-                                        html_str.append('        <div class="panel ' + pas +'">' + label + '</div>')
+                                        html_str.append('        <div class="panel ' + pas + '">' + label + '</div>')
                                     else:
                                         label = str(panelcounter+1-panelskip) + '-' + str(panelcounter+(u_max)-panelskip)
-                                        html_str.append('        <div class="panel ' + pas +'">' + label + '</div>')
+                                        html_str.append('        <div class="panel ' + pas + '">' + label + '</div>')
                                         panelcounter += u_max
                                 ## regular panels
                                 else:
                                     panelcounter += 1
                                     label = str(panelcounter-panelskip)
-                                    html_str.append('        <div class="panel ' + pas +'">' + label + '</div>')
+                                    html_str.append('        <div class="panel ' + pas + '">' + label + '</div>')
 
                     html_str.append('      </div>')
                 html_str.append('    </div>')
