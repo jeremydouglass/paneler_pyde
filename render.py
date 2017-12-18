@@ -9,20 +9,20 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
     galleries = pcode.pop('gallery', '')
     for gallery in galleries:
         galleryopts = gallery.pop('galleryopts', [['']]) # {::: }
-        html_str.append('<div class="gallery ' + galleryopts[0][0] +'">')
+        html_str.append('<div class="gallery ' + ' '.join(galleryopts[0]) +'">')
 
         spreads = gallery.pop('spread', '')
         for spread in spreads:
             spreadopts = spread.pop('spreadopts', [['']]) # {:: }
-            html_str.append('  <div class="spread ' + spreadopts[0][0] +'">')
+            html_str.append('  <div class="spread ' + ' '.join(spreadopts[0]) +'">')
 
             layouts = spread.pop('layout', '')
             for layout in layouts:
                 panelcounter = 0
                 panelskip = 0 # for blank x z panels
                 layoutopts = layout.pop('layoutopts', [['']]) # {: }
-                html_str.append('    <div class="layout ' + layoutopts[0][0] +'">')
 
+                html_str.append('    <div class="layout ' + ' '.join(layoutopts[0]) +'">')
                 panelgroups = layout.pop('panelgroup', '')
                 for panelgroup in panelgroups:
                     panelgroupopts = panelgroup.pop('panelgroupopts', [['']]) # {}
