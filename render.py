@@ -95,7 +95,8 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                                 ## ...there should be only one c arg, but the
                                 ## max is taken if there are many, 1 if no arg.
                                 c_args = [int(arg[1:]) for arg in panel
-                                          if arg.startswith('c')
+                                          if type(arg) is str
+                                          and arg.startswith('c')
                                           and len(arg) > 1
                                           and arg[1:].isdigit()]
                                 # print(c_args)
