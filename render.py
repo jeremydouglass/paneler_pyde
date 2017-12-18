@@ -59,28 +59,15 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                     ##    (i.e. discovered via comma placement)
                     ##
                     ## In the css3 renderer width must be specified in the panelgroup class.
+                    allopts = [pcodeopts[0], galleryopts[0], spreadopts[0], layoutopts[0], panelgroupopts[0]]
                     pgroup_width = 0
-                    if any(opt.startswith('w') for opt in pcodeopts[0]):
-                        for opt in pcodeopts[0]:
-                            if opt.startswith('w'):
+                    while allopts and pgroup_width == 0:
+                        opts = allopts.pop(0)
+                        for opt in opts:
+                            if type(opt) is str and opt.startswith('w'):
                                 pgroup_width = int(opt[1:])
-                    elif any(opt.startswith('w') for opt in galleryopts[0]):
-                        for opt in galleryopts[0]:
-                            if opt.startswith('w'):
-                                pgroup_width = int(opt[1:])
-                    elif any(opt.startswith('w') for opt in spreadopts[0]):
-                        for opt in spreadopts[0]:
-                            if opt.startswith('w'):
-                                pgroup_width = int(opt[1:])
-                    elif any(opt.startswith('w') for opt in layoutopts[0]):
-                        for opt in layoutopts[0]:
-                            if opt.startswith('w'):
-                                pgroup_width = int(opt[1:])
-                    elif any(opt.startswith('w') for opt in panelgroupopts[0]):
-                        for opt in panelgroupopts[0]:
-                            if opt.startswith('w'):
-                                pgroup_width = int(opt[1:])
-                    else:
+                                break
+                    if pgroup_width == 0:
                         ## Find the length in panel spans of the longest row.
                         ## e.g. c3 + 2 = 5
                         ## This could be the first row, but not necessarily.
