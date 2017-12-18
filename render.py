@@ -57,7 +57,16 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                 panelskip = 0 # for blank x z panels
                 layoutopts = layout.pop('layoutopts', [['']]) # {: }
 
-                html_str.append('    <div class="layout ' + ' '.join(layoutopts[0]) +'">')
+                html_str.append('    <div class="layout ' + opts_render(layoutopts[0]) +'">')
+                try:
+                    print layoutopts[0]
+                    aw, kvw, kve = opts_load(layoutopts[0])
+                    print aw, kvw, kve
+                    print kve
+                    if 'label' in kve:
+                        html_str.append('      <div class="label bottom">' + kve['label'] + '</div>')
+                except:
+                    pass
                 panelgroups = layout.pop('panelgroup', '')
                 for panelgroup in panelgroups:
                     panelgroupopts = panelgroup.pop('panelgroupopts', [['']]) # {}
