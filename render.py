@@ -1,5 +1,40 @@
 """Render panelcode into target output formats."""
 
+def opts_load(opts):
+    """Retrieve lists of option types from an option ParseResult."""
+    attr_words = []
+    kv_words = []
+    kv_exprs = {}
+    for opt in opts:
+        if type(opt) is str: # attr_word
+            attr_words.append(opt)
+        elif type(opt) is list:
+            if len(opt) == 1: # attr_word
+                attr_words.append(str(opt[0]))
+            elif len(opt) == 2 and not opt[1]: # attr_word
+                attr_words.append(str(opt[0]))
+            elif len(opt) == 2 and len(opt[0]) == 1 and str(opt[0]).isalpha() and str(opt[1]).isdigit(): # kv_word
+                kv_words.append(str(opt[0]) + str(opt[1]))
+            else: # kv_expr
+=                kv_exprs[str(opt[0])] = " ".join(opt[1:])
+    return attr_words, kv_words, kv_exprs
+
+def opts_render(opts, aw=True, kw=True, ke=False):
+    """Render options for html."""
+    attr_words, kv_words, kv_exprs = opts_load(opts)
+    print attr_words, kv_words, kv_exprs
+    result = []
+    if aw and attr_words:
+        result.extend(attr_words)
+    if kw and kv_words:
+        result.extend(kv_words)
+    if ke and kv_exprs:
+        kve_strs = []
+        for i in kv_exprs.items():
+            kve_str.append(str(i[0]) + "=" + "'" + str(i[1]) + "'") 
+        result.append(" ".join(kve_strs))
+    return " ".join(result)
+
 def pobj_to_html5_ccs3_grid(pcode_obj):
     """ convert a parsed panelcode object into html for html5 + css3-grid rendering"""
     html_str = []
@@ -9,12 +44,12 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
     galleries = pcode.pop('gallery', '')
     for gallery in galleries:
         galleryopts = gallery.pop('galleryopts', [['']]) # {::: }
-        html_str.append('<div class="gallery ' + ' '.join(galleryopts[0]) +'">')
+        html_str.append('<div class="gallery ' + opts_render(galleryopts[0]) +'">')
 
         spreads = gallery.pop('spread', '')
         for spread in spreads:
             spreadopts = spread.pop('spreadopts', [['']]) # {:: }
-            html_str.append('  <div class="spread ' + ' '.join(spreadopts[0]) +'">')
+            html_str.append('  <div class="spread ' + opts_render(spreadopts[0]) +'">')
 
             layouts = spread.pop('layout', '')
             for layout in layouts:
