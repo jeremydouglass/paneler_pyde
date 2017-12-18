@@ -16,8 +16,8 @@ equals = pp.Suppress('=')
 value = pp.Suppress("'") + pp.Combine(pp.OneOrMore(term), joinString=' ', adjacent=False) + pp.Suppress("'") | term
 kv_expr = pp.Suppress(pp.Optional(pp.Literal("."))) + pp.Group(key + equals + value)
 kv_word = pp.Suppress(pp.Optional(pp.Literal("."))) + pp.Group(pp.Regex(r"[a-zA-Z]+") + pp.Regex(r"[0-9]*"))
-attr_word    = pp.Suppress(pp.Optional(pp.Literal("."))) + term
-attr_list    = pp.ZeroOrMore( attr_word ^ kv_expr ^ kv_word )
+attr_word = pp.Suppress(pp.Optional(pp.Literal("."))) + term
+attr_list = pp.ZeroOrMore(attr_word ^ kv_expr ^ kv_word)
 
 panelgroupopts = (pp.Suppress(pp.Literal("{")) +
                   pp.Optional(attr_list) +
@@ -40,9 +40,9 @@ pcodeopts   = (pp.Suppress(pp.Literal("{::::")) +
 numrow         = pp.Regex(r"[0-9]*")
 newcol         = pp.Literal("+")
 newrow         = pp.Literal(",")
-groupseparator = pp.Group( newcol ^ newrow )
+groupseparator = pp.Group(newcol ^ newrow)
 groupunit      = pp.Group(numrow + pp.OneOrMore(attr_word) ^ numrow ^ attr_word)
-groupterms     = pp.Suppress(pp.Optional(pp.Suppress(pp.Literal("(")))) + pp.Group(groupunit + pp.ZeroOrMore( groupseparator + groupunit )).setResultsName('terms', listAllMatches=True) + pp.Suppress(pp.Optional(pp.Suppress(pp.Literal(")"))))
+groupterms     = pp.Suppress(pp.Optional(pp.Suppress(pp.Literal("(")))) + pp.Group(groupunit + pp.ZeroOrMore(groupseparator + groupunit)).setResultsName('terms', listAllMatches=True) + pp.Suppress(pp.Optional(pp.Suppress(pp.Literal(")"))))
 panelgroup     = pp.Group((groupterms ^ groupunit) +
                           pp.Optional(panelgroupopts)).setResultsName('panelgroup', listAllMatches=True)
 
