@@ -6,10 +6,10 @@ def opts_load(opts):
     kv_words = []
     kv_exprs = {}
     for opt in opts:
-        if type(opt) is str: # attr_word
+        if isinstance(opt, str):  # attr_word
             attr_words.append(opt)
-        elif type(opt) is list:
-            if len(opt) == 1: # attr_word
+        elif isinstance(opt, list):
+            if len(opt) == 1:  # attr_word
                 attr_words.append(str(opt[0]))
             elif len(opt) == 2 and not opt[1]: # attr_word
                 attr_words.append(str(opt[0]))
@@ -108,7 +108,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                     while allopts and pgroup_width == 0:
                         opts = allopts.pop(0)
                         for opt in opts:
-                            if type(opt) is str and opt.startswith('w'):
+                            if isinstance(opt, str) and opt.startswith('w'):
                                 pgroup_width = int(opt[1:])
                                 break
                     if pgroup_width == 0:
@@ -126,7 +126,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                                 ## ...there should be only one c arg, but the
                                 ## max is taken if there are many, 1 if no arg.
                                 c_args = [int(arg[1:]) for arg in panel
-                                          if type(arg) is str
+                                          if isinstance(arg, str)
                                           and arg.startswith('c')
                                           and len(arg) > 1
                                           and arg[1:].isdigit()]
@@ -152,7 +152,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                             arg_add = []
                             for i, arg in enumerate(panel):
                                 ## intercept generic u for CSS styling and add count
-                                if arg.startswith('u') and type(arg) is str:
+                                if arg.startswith('u') and isinstance(arg, str):
                                     if len(arg) == 1:
                                         arg_add.append('u1')
                                     elif len(arg) > 1 and arg[1:].isdigit():
