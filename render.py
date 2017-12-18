@@ -63,8 +63,13 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                 try:
                     aw, kvw, kve = opts_load(layoutopts[0])
                     if 'label' in kve:
-                        html_str.append('      <div class="label bottom">' + kve['label'] + '</div>')
-                except:
+                        label_str = kve['label']
+                        if 'id' in kve:
+                            id_str = kve['id']
+                            label_str = '<a href="' + id_str + '">' + label_str + '</a>'
+                        label_str_html = '      <div class="label bottom">' + label_str + '</div>'
+                        html_str.append('      ' + label_str_html)
+                except TypeError:
                     pass
                 panelgroups = layout.pop('panelgroup', '')
                 for panelgroup in panelgroups:
