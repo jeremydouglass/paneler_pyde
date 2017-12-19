@@ -60,13 +60,11 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                 layoutopts = layout.pop('layoutopts', [['']])  # {: }
 
                 html_str.append('    <div class="layout ' + opts_render(layoutopts[0]) + '">')
+                label_str_html = ''
                 try:
                     aw, kvw, kve = opts_load(layoutopts[0])
                     if 'label' in kve:
                         label_str = kve['label']
-                        if 'id' in kve:
-                            id_str = kve['id']
-                            label_str = '<a href="' + id_str + '">' + label_str + '</a>'
                         label_str_html = '      <div class="label bottom">' + label_str + '</div>'
                         html_str.append('      ' + label_str_html)
                 except TypeError:
@@ -207,6 +205,12 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
 
                     html_str.append('      </div>')
                 html_str.append('    </div>')
+                try:
+                    aw, kvw, kve = opts_load(layoutopts[0])
+                    if 'img' in kve:
+                        html_str.append('    <div style="padding: 0px; margin: 0px" class="layout' + opts_render(layoutopts[0]) + '"><div class="label bottom">' + kve['img'] + '</div><div><img style="max-width:100%; max-height:100%; object-fit: scale-down;" src="' + kve['img'] + '" /></div></div>')
+                except TypeError:
+                    pass
             html_str.append('  </div>')
         html_str.append('</div>')
 
