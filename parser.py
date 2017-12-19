@@ -13,7 +13,7 @@ import pyparsing as pp
 term = pp.Word(pp.alphas, pp.alphanums+'-')
 key = term
 equals = pp.Suppress('=')
-value = pp.Suppress("'") + pp.Combine(pp.OneOrMore(term), joinString=' ', adjacent=False) + pp.Suppress("'") | term
+value = pp.Suppress("'") + pp.Regex(r"[^']*") + pp.Suppress("'") | term
 kv_expr = pp.Suppress(pp.Optional(pp.Literal("."))) + pp.Group(key + equals + value)
 kv_word = pp.Suppress(pp.Optional(pp.Literal("."))) + pp.Group(pp.Regex(r"[a-zA-Z]+") + pp.Regex(r"[0-9]*"))
 attr_word = pp.Suppress(pp.Optional(pp.Literal("."))) + term
