@@ -1,21 +1,18 @@
 """Render panelcode into target output formats."""
 
 
-def img_render(kve, lopt_str):
+def img_render(kve, lopt_str, sopt_str, gopt_str, popt_str):
     """Render image preview strings based on settings."""
     i_before = ''
     i_layer = ''
     i_after = ''
     if 'img' in kve:
-        if 'i' in kve:
-            if 'before' in kve['i'] or 'after' in kve['i']:
-                if 'before' in kve['i']:
-                    i_before = '    <div class="layout ' + lopt_str + '"><div class="img ' + kve['i'] + '"><img src="' + kve['img'] + '" /></div></div>'
-                if 'after' in kve['i']:
-                    i_after = '    <div class="layout ' + lopt_str + '"><div class="img ' + kve['i'] + '"><img src="' + kve['img'] + '" /></div></div>'
-            else:
-                i_layer = '    <div class="img ' + kve['i'] + '"><img src="' + kve['img'] + '" /></div>'
-        else:
+        for opt_str in [lopt_str, sopt_str, gopt_str, popt_str]:
+            if 'ibefore' in opt_str:
+                i_before = '    <div class="layout ' + lopt_str + '"><div class="img"><img src="' + kve['img'] + '" /></div></div>'
+            if 'iafter' in opt_str:
+                i_after  = '    <div class="layout ' + lopt_str + '"><div class="img"><img src="' + kve['img'] + '" /></div></div>'
+        if not (i_before or i_after):
             i_layer = '    <div class="img"><img src="' + kve['img'] + '" /></div>'
         return i_before, i_layer, i_after
     return '', '', ''
@@ -79,7 +76,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                 panelskip = 0  # for blank x z panels
                 layoutopts = layout.pop('layoutopts', [['']])  # {: }
                 aw, kvw, kve = opts_load(layoutopts[0])
-                i_before, i_str, i_after = img_render(kve, opts_render(layoutopts[0]))
+                i_before, i_str, i_after = img_render(kve, opts_render(layoutopts[0]), opts_render(spreadopts[0]), opts_render(galleryopts[0]), opts_render(pcodeopts[0]))
                 html_str.append(i_before)
                 html_str.append('    <div class="layout ' + opts_render(layoutopts[0]) + '">')
                 label_str_html = ''
