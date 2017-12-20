@@ -248,6 +248,23 @@ div.layout, div .layout {
   padding-bottom: 20px; }
   div.layout .panelgroup, div .layout .panelgroup {
     grid-gap: 5px; }
+
+div.layout.pimg {
+  position:absolute;
+  width:100%;
+  height:100%;
+  padding: 0px;
+  margin: 0px
+}
+div.layout.pimg.overlay {
+  opacity:0.5;
+}
+div.layout.pimg > img {
+  max-width:100%;
+  max-height:100%;
+  object-fit: scale-down;
+}
+
 div.small.layout, div.small .layout, div .small.layout, div .small .layout, .small div.layout, .small div .layout {
   width: 100px;
   height: 114px;
