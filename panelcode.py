@@ -26,8 +26,7 @@ def decode():
                 try:
                     pcode_obj = parser.parse(graph, parser.root)
                     html_lines = render.pobj_to_html5_ccs3_grid(pcode_obj)
-                    for line in html_lines:
-                        sys.stdout.write(line)
+                    sys.stdout.write("\n".join(html_lines))
                 except parser.pp.ParseException:
                     sys.stdout.write(graph)
             else:
