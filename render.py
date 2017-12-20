@@ -1,6 +1,26 @@
 """Render panelcode into target output formats."""
 
 
+def img_render(kve, lopt_str):
+    """Render image preview strings based on settings."""
+    i_before = ''
+    i_layer = ''
+    i_after = ''
+    if 'img' in kve:
+        if 'i' in kve:
+            if 'before' in kve['i'] or 'after' in kve['i']:
+                if 'before' in kve['i']:
+                    i_before = '    <div class="layout ' + lopt_str + '"><div class="img ' + kve['i'] + '"><img src="' + kve['img'] + '" /></div></div>'
+                if 'after' in kve['i']:
+                    i_after = '    <div class="layout ' + lopt_str + '"><div class="img ' + kve['i'] + '"><img src="' + kve['img'] + '" /></div></div>'
+            else:
+                i_layer = '    <div class="img ' + kve['i'] + '"><img src="' + kve['img'] + '" /></div>'
+        else:
+            i_layer = '    <div class="img"><img src="' + kve['img'] + '" /></div>'
+        return i_before, i_layer, i_after
+    return '', '', ''
+
+
 def opts_load(opts):
     """Retrieve lists of option types from an option ParseResult."""
     attr_words = []
@@ -58,17 +78,19 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                 panelcounter = 0
                 panelskip = 0  # for blank x z panels
                 layoutopts = layout.pop('layoutopts', [['']])  # {: }
-
+                aw, kvw, kve = opts_load(layoutopts[0])
+                i_before, i_str, i_after = img_render(kve, opts_render(layoutopts[0]))
+                html_str.append(i_before)
                 html_str.append('    <div class="layout ' + opts_render(layoutopts[0]) + '">')
                 label_str_html = ''
                 try:
-                    aw, kvw, kve = opts_load(layoutopts[0])
                     if 'label' in kve:
                         label_str = kve['label']
                         label_str_html = '      <div class="label bottom">' + label_str + '</div>'
                         html_str.append('      ' + label_str_html)
                 except TypeError:
                     pass
+
                 panelgroups = layout.pop('panelgroup', '')
                 for panelgroup in panelgroups:
                     panelgroupopts = panelgroup.pop('panelgroupopts', [['']])  # {}
@@ -204,13 +226,9 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                                     html_str.append('        <div class="panel ' + pas + '">' + label + '</div>')
 
                     html_str.append('      </div>')
+                html_str.append(i_str)
                 html_str.append('    </div>')
-                try:
-                    aw, kvw, kve = opts_load(layoutopts[0])
-                    if 'img' in kve:
-                        html_str.append('    <div style="padding: 0px; margin: 0px" class="layout' + opts_render(layoutopts[0]) + '"><div class="label bottom">' + kve['img'] + '</div><div><img style="max-width:100%; max-height:100%; object-fit: scale-down;" src="' + kve['img'] + '" /></div></div>')
-                except TypeError:
-                    pass
+                html_str.append(i_after)
             html_str.append('  </div>')
         html_str.append('</div>')
 
