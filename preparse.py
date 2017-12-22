@@ -53,5 +53,5 @@ def decomment(item, delim):
         if seg != '':
             yield seg
         else:
-            ## align line numbers in oarse error checking with original
+            # align line numbers in oarse error checking with original
             yield ''

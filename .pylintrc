@@ -3,7 +3,7 @@
 [MESSAGES CONTROL]
 
 # disable=undefined-variable
-
+disable=bad-continuation
 
 ## Good variable names and additional-builtins as defined in processing.py:
 ## -  /runtime/src/jycessing/core.py
