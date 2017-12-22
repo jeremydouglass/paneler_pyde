@@ -37,7 +37,12 @@ def img_render(kve, lopt_str, sopt_str, gopt_str, popt_str):
     i_before = ''
     i_layer = ''
     i_after = ''
+    i_label_str_html = ''
     if 'img' in kve:
+        if 'ilabel' in kve:
+            i_label_str = kve['ilabel']
+            i_label_str_html = '      <div class="label bottom">' \
+                + i_label_str + '</div>'
         for opt_str in [lopt_str, sopt_str, gopt_str, popt_str]:
             if 'ibefore' in opt_str:
                 i_before = '    <div class="layout ' + lopt_str + '"><div class="img"><img src="' + kve['img'] + '" /></div></div>'
@@ -111,13 +116,6 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                 html_str.append(i_before)
                 html_str.append('    <div class="layout ' + opts_render(layoutopts[0]) + '">')
                 label_str_html = ''
-                try:
-                    if 'label' in kve:
-                        label_str = kve['label']
-                        label_str_html = '      <div class="label bottom">' + label_str + '</div>'
-                        html_str.append('      ' + label_str_html)
-                except TypeError:
-                    pass
 
                 panelgroups = layout.pop('panelgroup', '')
                 for panelgroup in panelgroups:
@@ -254,7 +252,15 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                                     html_str.append('        <div class="panel ' + pas + '">' + label + '</div>')
 
                     html_str.append('      </div>')
+
                 html_str.append(i_str)
+                try:
+                    if 'label' in kve:
+                        label_str = kve['label']
+                        label_str_html = '      <div class="label bottom"><div>' + label_str + '</div></div>'
+                        html_str.append('      ' + label_str_html)
+                except TypeError:
+                    pass
                 html_str.append('    </div>')
                 html_str.append(i_after)
             html_str.append('  </div>')
