@@ -1,5 +1,28 @@
 """Render panelcode into target output formats."""
 
+import mistune
+import preparse
+import parser
+
+
+class PanelCodeRenderer(mistune.Renderer):
+    """Render full markdown document with fenced panelcode blocks"""
+    def block_code(self, code, lang):
+        html_str = ''
+        if lang == 'panelcode':
+            try:
+                graph = ''.join(preparse.decomment(code.split('\n'), '#'))
+                pcode_obj = parser.parse(graph, parser.root)
+                html_lines = pobj_to_html5_ccs3_grid(pcode_obj)
+                html_str = ''.join(html_lines)
+            except parser.pp.ParseException:
+                html_str = '\n<pre><code>%s</code></pre>\n' % code
+                # mistune.escape(code)
+        else:
+            html_str = '\n<pre><code>%s</code></pre>\n' % code
+        return html_str
+        # return sys.stdout.write(code)
+
 
 def img_render(kve, lopt_str, sopt_str, gopt_str, popt_str):
     """Render image preview strings based on settings."""
