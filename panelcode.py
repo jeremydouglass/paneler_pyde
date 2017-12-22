@@ -23,6 +23,13 @@ def decode(args):
                 return
             except TypeError as err:
                 print err
+        elif args.type == 'markdown':
+            try:
+                mdresult = render.pc_md_to_html(data_list)
+                sys.stdout.write(mdresult)
+                return
+            except TypeError as err:
+                print err
         sys.stdout.write('\n'.join(data_list))
         return
 
