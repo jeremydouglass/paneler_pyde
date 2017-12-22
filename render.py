@@ -24,6 +24,14 @@ class PanelCodeRenderer(mistune.Renderer):
         # return sys.stdout.write(code)
 
 
+def pc_md_to_html(data_list):
+    """Render markdown with embedded panelcode to html."""
+    pcrenderer = PanelCodeRenderer()
+    markdown = mistune.Markdown(renderer=pcrenderer)
+    label = '<p><em>panelcode: markdown processor (mistune)</em></p>\n'
+    return markdown(label + "\n".join(data_list))
+
+
 def img_render(kve, lopt_str, sopt_str, gopt_str, popt_str):
     """Render image preview strings based on settings."""
     i_before = ''
