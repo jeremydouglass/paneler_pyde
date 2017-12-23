@@ -25,6 +25,7 @@ def parse_fenced_to_html(data_list, mode='replace'):
         )
     data_fence_list = fences.split('\n'.join(data_list))
     for idx, graph in enumerate(data_fence_list):
+        graph = graph.replace('\n\n', '\n')
         if idx % 5 == 0:
             result_list.append(graph)
         if idx % 5 == 3:
