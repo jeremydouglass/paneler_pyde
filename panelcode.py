@@ -17,7 +17,7 @@ def decode(args):
         data_list.append(line)
     if data_list:
         if args.type == 'fence':
-            result_list = preparse.parse_fenced_to_html(data_list)
+            result_list = preparse.parse_fenced_to_html(data_list, mode='pre')
             try:
                 sys.stdout.write('\n'.join(result_list))
             except TypeError as err:
