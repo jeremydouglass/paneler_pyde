@@ -1,5 +1,6 @@
 """Render panelcode into target output formats."""
 
+import os
 import mistune
 import preparse
 import parser
@@ -39,6 +40,11 @@ def img_render(kve, lopt_str, sopt_str, gopt_str, popt_str):
     i_after = ''
     i_label_str_html = ''
     if 'img' in kve:
+        for opt_str in popt_str, gopt_str, sopt_str, lopt_str:
+            if 'autoilabel' in opt_str:
+                i_label_str = os.path.splitext(os.path.basename(kve['img']))[0]
+                i_label_str_html = '      <div class="label bottom">' \
+                    + i_label_str + '</div>'
         if 'ilabel' in kve:
             i_label_str = kve['ilabel']
             i_label_str_html = '      <div class="label bottom">' \
