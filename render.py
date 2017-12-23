@@ -49,7 +49,7 @@ def img_render(kve, lopt_str, sopt_str, gopt_str, popt_str):
             i_label_str = kve['ilabel']
             i_label_str_html = '      <div class="label bottom">' \
                 + i_label_str + '</div>'
-        for opt_str in [lopt_str, sopt_str, gopt_str, popt_str]:
+        for opt_str in [popt_str, gopt_str, sopt_str, lopt_str]:
             if 'ibefore' in opt_str:
                 i_before = '    <div class="layout ' + lopt_str \
                          + '"><div class="img"><img src="' + kve['img'] \
