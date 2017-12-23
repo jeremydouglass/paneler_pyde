@@ -292,9 +292,20 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
 
                 html_str.append(i_str)
                 try:
+                    label_str_html = ''
+                    for opt_str in [opts_render(layoutopts[0]),
+                                    opts_render(spreadopts[0]),
+                                    opts_render(galleryopts[0]),
+                                    opts_render(pcodeopts[0])
+                                    ]:
+                        if 'autolabel' in opt_str:
+                            label_str = os.path.splitext(os.path.basename(kve['img']))[0]
+                            label_str_html = '      <div class="label bottom">' \
+                                + label_str + '</div>'
                     if 'label' in kve:
                         label_str = kve['label']
                         label_str_html = '      <div class="label bottom"><div>' + label_str + '</div></div>'
+                    if label_str_html:
                         html_str.append('      ' + label_str_html)
                 except TypeError:
                     pass
