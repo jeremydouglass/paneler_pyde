@@ -26,22 +26,24 @@ def parse_fenced_to_html(data_list, mode='replace'):
     data_fence_list = fences.split('\n'.join(data_list))
     for idx, graph in enumerate(data_fence_list):
         if idx % 5 == 0:
-            result_list.append(str(graph))
+            result_list.append(graph)
         if idx % 5 == 3:
+            result = ''
             try:
-                graph = ''.join(decomment(graph.split('\n'), '#'))
-                pcode_obj = parser.parse(graph, parser.root)
+                graph_clean = ''.join(decomment(graph.split('\n'), '#'))
+                pcode_obj = parser.parse(graph_clean, parser.root)
                 html_lines = render.pobj_to_html5_ccs3_grid(pcode_obj)
                 if mode == 'pre':
-                    result_list.append(''.join(html_lines))
-                    result_list.append(graph)
+                    result += ''.join(html_lines)
+                    result += '\n' + data_fence_list[idx-2] + graph + '\n```\n'
                 elif mode == 'post':
-                    result_list.append(''.join(html_lines))
-                    result_list.append(graph)
-                else:  # mode = 'replace':
-                    result_list.append(''.join(html_lines))
-            except parser.pp.ParseException:
-                result_list.append(str(graph))
+                    result += '\n' + data_fence_list[idx-2] + graph + '\n```\n'
+                    result += ''.join(html_lines)
+                elif mode == 'replace':
+                    result = ''.join(html_lines)
+            except parser.pp.ParseException as err:
+                result = graph
+            result_list.append(result)
     return result_list
 
 
