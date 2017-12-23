@@ -35,7 +35,7 @@ if __name__ == "__main__":
     AP = argparse.ArgumentParser(
         description=DESC,
         epilog='EXAMPLE:\n  python ' + os.path.basename(__file__)
-        + '-i ./data/ -f "*.txt" -o ./output\n \n',
+        + '-t markdown\n \n',
         formatter_class=argparse.RawDescriptionHelpFormatter
         )
     AP.add_argument('-t', '--type', default='fence',
