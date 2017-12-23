@@ -32,7 +32,6 @@ def parse_fenced_to_html(data_list, mode='replace'):
                 graph = ''.join(decomment(graph.split('\n'), '#'))
                 pcode_obj = parser.parse(graph, parser.root)
                 html_lines = render.pobj_to_html5_ccs3_grid(pcode_obj)
-                result_list.append(''.join(html_lines))
                 if mode == 'pre':
                     result_list.append(''.join(html_lines))
                     result_list.append(graph)
