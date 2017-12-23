@@ -28,7 +28,7 @@ def pc_md_to_html(data_list):
     """Render markdown with embedded panelcode to html."""
     pcrenderer = PanelCodeRenderer()
     markdown = mistune.Markdown(renderer=pcrenderer)
-    label = '<p><em>panelcode: markdown processor (mistune)</em></p>\n'
+    label = '<p style="font-size:x-small"><em>panelcode: markdown processor (mistune)</em></p>\n'
     return markdown(label + "\n".join(data_list))
 
 

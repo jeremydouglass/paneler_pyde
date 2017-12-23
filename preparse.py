@@ -17,7 +17,7 @@ def parse_fenced_to_html(data_list, mode='replace'):
     before or after it ('pre' / 'post')
     """
     result_list = []
-    result_list.append('<p><em>panelcode: fence pre-processor</em></p>\n')
+    result_list.append('<p style="font-size:x-small"><em>panelcode: fence pre-processor</em></p>\n')
     fences = re.compile(  # see mistune
         r' *(`{3,}|~{3,})( *\S+ *)?\n'  # ```lang (removed)
         r'([\s\S]+?\s*)'
