@@ -40,27 +40,30 @@ def img_render(kve, lopt_str, sopt_str, gopt_str, popt_str):
     i_after = ''
     i_label_str_html = ''
     if 'img' in kve:
+        img_paths = [x.strip() for x in kve['img'].split(':')]
         for opt_str in popt_str, gopt_str, sopt_str, lopt_str:
             if 'autoilabel' in opt_str:
-                i_label_str = os.path.splitext(os.path.basename(kve['img']))[0]
+                i_label_str = os.path.splitext(os.path.basename(img_paths[0]))[0]
                 i_label_str_html = '      <div class="label bottom">' \
                     + i_label_str + '</div>'
         if 'ilabel' in kve:
             i_label_str = kve['ilabel']
             i_label_str_html = '      <div class="label bottom">' \
                 + i_label_str + '</div>'
+        img_tag_str = ''
+        for idx, path in enumerate(img_paths):
+            img_tag_str = img_tag_str + '<img src="' + img_paths[idx] + '"/>'
         for opt_str in [popt_str, gopt_str, sopt_str, lopt_str]:
             if 'ibefore' in opt_str:
                 i_before = '    <div class="layout ' + lopt_str \
-                         + '"><div class="img"><img src="' + kve['img'] \
-                         + '" /></div>' + i_label_str_html + '</div>'
+                         + '"><div class="img">' + img_tag_str + '</div>' \
+                         + i_label_str_html + '</div>'
             if 'iafter' in opt_str:
                 i_after = '    <div class="layout ' + lopt_str \
-                        + '"><div class="img"><img src="' + kve['img'] \
-                        + '" /></div>' + i_label_str_html + '</div>'
+                        + '"><div class="img">' + img_tag_str + '</div>' \
+                        + i_label_str_html + '</div>'
         if not (i_before or i_after):
-            i_layer = '    <div class="img"><img src="' + kve['img'] \
-                      + '" /></div>'
+            i_layer = '    <div class="img">' + img_tag_str + '</div>'
         return i_before, i_layer, i_after
     return '', '', ''
 
