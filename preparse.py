@@ -7,7 +7,7 @@ import parser
 import render
 
 
-def parse_fenced_to_html(data_list, mode='replace'):
+def parse_fenced_to_html(data_list, mode='replace', panel='open', sizers=True):
     """Parse panelcode only within markdown fenced code blocks.
     Split a list of lines on fence open and close markers,
     attempt to render code block contents as panelcode or pass through,
@@ -17,13 +17,51 @@ def parse_fenced_to_html(data_list, mode='replace'):
     before or after it ('pre' / 'post')
     """
     result_list = []
-    result_list.append('<p style="font-size:x-small"><em>panelcode: fence pre-processor</em></p>\n')
     fences = re.compile(  # see mistune
         r' *(`{3,}|~{3,})( *\S+ *)?\n'  # ```lang (removed)
         r'([\s\S]+?\s*)'
         r'(\1)(?: *\n+|$)'  # ```
         )
     data_fence_list = fences.split('\n'.join(data_list))
+    if sizers==True and len(data_fence_list)>1:
+        jquery_cdn = """<script
+  src="https://code.jquery.com/jquery-2.2.4.min.js"
+  integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
+  crossorigin="anonymous"></script>
+ """
+        size_script ="""<script type="text/javascript">
+  $(document).ready(function(){
+    // On load
+    $('.gallery-size').change(function(){
+      $(this).closest('div.gallery')
+      .removeClass('default small thumb mini micro micro2')
+        .addClass( $(this).val() );
+    })
+})
+</script>
+"""
+        size_selector_global = """Resize All: <select class="all-size">
+  <option value=""></option>
+  <option value="default">default</option>
+  <option value="small">small</option>
+  <option value="thumb">thumb</option>
+  <option value="mini">mini</option>
+  <option value="micro">micro</option>
+  <option value="micro2">micro2</option>
+</select>
+<div style="clear: both;"></div>
+"""
+        result_list.extend([jquery_cdn, size_script, size_selector_global])
+        size_selector = """<select class="gallery-size">
+  <option value="">--size--</option>
+  <option value="default">default</option>
+  <option value="small">small</option>
+  <option value="thumb">thumb</option>
+  <option value="mini">mini</option>
+  <option value="micro">micro</option>
+  <option value="micro2">micro2</option>
+</select>
+"""
     for idx, graph in enumerate(data_fence_list):
         graph = graph.replace('\n\n', '\n')
         if idx % 5 == 0:
@@ -34,9 +72,13 @@ def parse_fenced_to_html(data_list, mode='replace'):
                 graph_clean = ''.join(decomment(graph.split('\n'), '#'))
                 pcode_obj = parser.parse(graph_clean, parser.root)
                 html_lines = render.pobj_to_html5_ccs3_grid(pcode_obj)
+                control_str = ''
+                if (sizers == True or 'control' in graph):
+                    if 'nocontrol' not in graph:
+                        control_str = '<div style="clear: both;"></div><bdo dir="ltr"><details ' + panel + '><summary>panelcode</summary>\n' + size_selector + '\n```panelcode' + graph + '\n```\n\n</details></bdo>\n'
                 if mode == 'pre':
+                    html_lines.insert(-1, control_str)
                     result += ''.join(html_lines)
-                    result += '\n' + data_fence_list[idx-2] + graph + '\n```\n'
                 elif mode == 'post':
                     result += '\n' + data_fence_list[idx-2] + graph + '\n```\n'
                     result += ''.join(html_lines)
@@ -45,6 +87,7 @@ def parse_fenced_to_html(data_list, mode='replace'):
             except parser.pp.ParseException as err:
                 result = graph
             result_list.append(result)
+    result_list.append('\n<p style="font-size:x-small"><em>panelcode: fence pre-processor</em></p>\n')
     return result_list
 
 
