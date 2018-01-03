@@ -5,9 +5,9 @@
 import re
 import parser
 import render
+import highlight
 
-
-def parse_fenced_to_html(data_list, mode='replace', panel='open', sizers=True):
+def parse_fenced_to_html(data_list, mode='replace', panel='open', sizers=True, colorize=True):
     """Parse panelcode only within markdown fenced code blocks.
     Split a list of lines on fence open and close markers,
     attempt to render code block contents as panelcode or pass through,
@@ -23,6 +23,9 @@ def parse_fenced_to_html(data_list, mode='replace', panel='open', sizers=True):
         r'(\1)(?: *\n+|$)'  # ```
         )
     data_fence_list = fences.split('\n'.join(data_list))
+    if colorize==True:
+        highlight_style = "<style>\n" + highlight.style_css() + "\n</style>"
+        result_list.append(highlight_style)
     if sizers==True and len(data_fence_list)>1:
         jquery_cdn = """<script
   src="https://code.jquery.com/jquery-2.2.4.min.js"
@@ -68,6 +71,10 @@ def parse_fenced_to_html(data_list, mode='replace', panel='open', sizers=True):
             result_list.append(graph)
         if idx % 5 == 3:
             result = ''
+            if colorize:
+                graph_out = '\n'+ str(highlight.style_string(graph)) +'\n'
+            else:
+                graph_out = '\n```panelcode' + graph + '\n```\n' # data_fence_list[idx-2]
             try:
                 graph_clean = ''.join(decomment(graph.split('\n'), '#'))
                 pcode_obj = parser.parse(graph_clean, parser.root)
@@ -75,17 +82,17 @@ def parse_fenced_to_html(data_list, mode='replace', panel='open', sizers=True):
                 control_str = ''
                 if (sizers == True or 'control' in graph):
                     if 'nocontrol' not in graph:
-                        control_str = '<div style="clear: both;"></div><bdo dir="ltr"><details ' + panel + '><summary>panelcode</summary>\n' + size_selector + '\n```panelcode' + graph + '\n```\n\n</details></bdo>\n'
+                        control_str = '<div style="clear: both;"></div><bdo dir="ltr"><details ' + panel + '><summary>panelcode</summary>\n' + size_selector + graph_out + '\n</details></bdo>\n'
                 if mode == 'pre':
                     html_lines.insert(-1, control_str)
                     result += ''.join(html_lines)
                 elif mode == 'post':
-                    result += '\n' + data_fence_list[idx-2] + graph + '\n```\n'
+                    result += '\n' + graph_out + '\n'
                     result += ''.join(html_lines)
                 elif mode == 'replace':
                     result = ''.join(html_lines)
             except parser.pp.ParseException as err:
-                result = graph
+                result = graph_out
             result_list.append(result)
     result_list.append('\n<p style="font-size:x-small"><em>panelcode: fence pre-processor</em></p>\n')
     return result_list
