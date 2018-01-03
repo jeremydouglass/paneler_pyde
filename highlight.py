@@ -67,3 +67,12 @@ def all_styles(code, lexer=PanelcodeLexer(), prefix='test_'):
             formatter = HtmlFormatter(style=smkey)
             formatter.full = True
             html_str = highlight(code, lexer, formatter, outfile=htmlfile)
+
+def style_string(code, lexer=PanelcodeLexer(), style='paraiso-dark'):
+    formatter = HtmlFormatter(style=style)
+    # formatter.full = True
+    html_str = highlight(code, lexer, formatter)
+    return html_str
+
+def style_css(style='paraiso-dark'):
+    return HtmlFormatter(style=style).get_style_defs() # '.highlight'
