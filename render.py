@@ -30,7 +30,7 @@ def pc_md_to_html(data_list):
     pcrenderer = PanelCodeRenderer()
     markdown = mistune.Markdown(renderer=pcrenderer)
     label = '<p style="font-size:x-small"><em>panelcode: markdown processor (mistune)</em></p>\n'
-    return markdown(label + "\n".join(data_list))
+    return markdown("\n".join(data_list) + label)
 
 
 def img_render(kve, lopt_str, sopt_str, gopt_str, popt_str):
