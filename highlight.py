@@ -29,18 +29,20 @@ class PanelcodeLexer(RegexLexer): # PanelcodeLexer
             (r'(\.)([a-zA-Z][0-9a-zA-Z\-]+)', bygroups(Punctuation, Name.Attribute)),
             (r'(\.)([a-zA-Z])', bygroups(Punctuation, Name.Attribute)),
 
-            (r'([crw])([0-9]+)', bygroups(Keyword.Reserved, Name.Attribute)),
-            (r'([biuxz])([0-9]+)', bygroups(Name.Builtin, Name.Attribute)),
+            (r'([crw])([0-9]+)', bygroups(Name.Attribute, Literal)),
+            (r'([biuxz])([0-9]+)', bygroups(Name.Attribute, Literal)),
 
             (r'[a-zA-Z\-][0-9a-zA-Z\-]*', Name.Attribute),
             # (r'[0-9][0-9]', Error),
-            (r'\b[0-9]', Number.Integer),
+            (r'[0-9]', Number.Integer),
         ],
         'dotopts' : [
             (r'[\+\,\_\|\;\@]', Operator, '#pop'),
             (r'\s+', Text, '#pop'),
-            (r'([crw])([0-9]+)', bygroups(Keyword.Reserved, Name.Attribute)),
-            (r'([biuxz])([0-9]+)', bygroups(Name.Builtin, Name.Attribute)),
+
+            (r'([crw])([0-9]+)', bygroups(Name.Attribute, Literal)),
+            (r'([biuxz])([0-9]+)', bygroups(Name.Attribute, Literal)),
+
             (r'(\.)', Punctuation),
             (r'[^\s\.]+', Name.Attribute)
         ],
@@ -48,10 +50,12 @@ class PanelcodeLexer(RegexLexer): # PanelcodeLexer
             (r'(\.)', Punctuation),
             (r'\}', Punctuation, '#pop'),
             (r'\s+', Text),
-            (r'([crw])([0-9]+)', bygroups(Keyword.Reserved, Name.Attribute)),
-            (r'([biuxz])([0-9]+)', bygroups(Name.Builtin, Name.Attribute)),
-            (r'(\w+)(\s?)(=)(\s?)',
-             bygroups(Name.Attribute, Text, Operator, Text), 'optarg'),
+
+            (r'([crw])([0-9]+)', bygroups(Name.Attribute, Literal)),
+            (r'([biuxz])([0-9]+)', bygroups(Name.Attribute, Literal)),
+
+            (r'(\w+)(\s?)([\:=])(\s?)',
+             bygroups(Name.Attribute, Text, Punctuation, Text), 'optarg'),
             (r'[^\}\s]+', Name.Attribute)
         ],
         'optarg' : [
