@@ -130,8 +130,20 @@ def style_string(code, lexer=PanelcodeLexer(), style='paraiso-dark'):
     html_str = highlight(code, lexer, formatter)
     return html_str
 
-def style_css(style='paraiso-dark'):
-    return HtmlFormatter(style=style).get_style_defs('.highlight')
+
+def style_css(style=SolarizedStyle, inline=False, defs='.highlight'):
+    """Render CSS definitions for lexed Panelcode.
+    Use 'inline to wrap in <style> tags, or save results as .css or .scss.
+
+    Markdown processors strip style tags and references, so CSS generation
+    will NOT work in preprocessors for Markdown. Instead the CSS class styling
+    information must be added after Markdown processing.
+    """
+    css_str = HtmlFormatter(style=style).get_style_defs(defs)
+    if inline:
+        css_str = '<style>\n' + css_str + '\n<style>\n'
+    return css_str
+
 
 if __name__ == '__main__':
     print style_css(style=SolarizedStyle)
