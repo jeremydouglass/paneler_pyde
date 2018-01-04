@@ -65,13 +65,6 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='',
         r'(\1)(?: *\n+|$)'  # ```
         )
     data_fence_list = fences.split('\n'.join(data_list))
-    # General approach does not work -- Markdown processors strip style tags.
-    # Instead the css class styling information needs to already be available
-    #  via external stylsheets.
-    #
-    # if colorize==True:
-    #     highlight_style = "<style>\n" + highlight.style_css() + "\n</style>"
-    #     result_list.append(highlight_style)
     if consoles and len(data_fence_list) > 1:
         result_list.extend([JQUERY_SCRIPT_CDN, SIZER_SCRIPT])
     for idx, graph in enumerate(data_fence_list):
