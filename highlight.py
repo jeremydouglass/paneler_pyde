@@ -116,13 +116,20 @@ class SolarizedStyle(Style):
         Text:            content,
     }
 
-def all_styles(code, lexer=PanelcodeLexer(), prefix='test_'):
+
+def all_styles(code, outpath, lexer=PanelcodeLexer(),
+               prefix='test_', suffix='.html'):
+    """Given code, outputs an HTML file for each available built-in style.
+    A testing class for quickly previewing how a particular approach to
+    lexer token naming will look across a variety of pre-existing styles.
+    """
     print STYLE_MAP.keys()
     for smkey in STYLE_MAP.keys():
-        with open(sketchPath() + '/' + prefix + smkey + '.html', 'w') as htmlfile: 
+        fname = outpath + '/' + prefix + smkey + suffix
+        with open(fname, 'w') as htmlfile:
             formatter = HtmlFormatter(style=smkey)
             formatter.full = True
-            html_str = highlight(code, lexer, formatter, outfile=htmlfile)
+            highlight(code, lexer, formatter, outfile=htmlfile)
 
 def style_string(code, lexer=PanelcodeLexer(), style='paraiso-dark'):
     formatter = HtmlFormatter(style=style)
