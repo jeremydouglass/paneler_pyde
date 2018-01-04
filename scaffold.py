@@ -22,9 +22,9 @@ def fpath_to_fnamelist(fpath, fnpattern):
             for f in fnmatch.filter(files, fnpattern)]
 
 
-def images_to_markdown(fpath, fnpattern, fout):
-    """For a group of image files in fpath matching pattern fpattern --
-    e.g. /images, *.png -- render a markdown file.
+def images_to_markdown(fpath, fnpattern='*.png', fout='scaffold.md'):
+    """For a group of image files in a source path fpath ('/images')
+    matching a file pattern ('*.png') render a panelcode markdown file.
     """
 
     template = '/data/templates/markdown_scaffold.md'
