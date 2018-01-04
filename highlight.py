@@ -5,6 +5,7 @@ from pygments.formatters import HtmlFormatter
 from pygments.lexer import bygroups, RegexLexer
 from pygments.lexers import load_lexer_from_file
 from pygments.token import *
+from pygments.style import Style
 from pygments.styles import STYLE_MAP
 
 class PanelcodeLexer(RegexLexer): # PanelcodeLexer
@@ -66,6 +67,55 @@ class PanelcodeLexer(RegexLexer): # PanelcodeLexer
         ]
     }
 
+class SolarizedStyle(Style):
+    """Maps Solarized colors to Panelcode pygments tokens."""
+
+    mode = 'light'
+    default_style = ""
+    
+    base03 =  '#002b36' # dark: background
+    base02 =  '#073642' # dark: bg highlights
+    base01 =  '#586e75' # dark: comment       | light: emphasis
+    base00 =  '#657b83' #                     | light: content
+    base0 =   '#839496' # dark: content
+    base1 =   '#93a1a1' # dark: emphasis      | light: comment
+    base2 =   '#eee8d5' #                     | light: bg highlights
+    base3 =   '#fdf6e3' #                     | light: background
+    yellow =  '#b58900'
+    orange =  '#cb4b16'
+    red =     '#dc322f'
+    magenta = '#d33682'
+    violet =  '#6c71c4'
+    blue =    '#268bd2'
+    cyan =    '#2aa198'
+    green =   '#859900'
+
+    if mode == 'dark':
+        background_color = base03
+        highlight =  base02
+        comment =    base01
+        content =    base0
+        emphasis =   base1
+    else:
+        background_color = base3
+        highlight =  base2
+        comment =    base1
+        content =    base00
+        emphasis =   base01
+
+    styles = {
+        Operator:       'bold ' + magenta,    # Matches @ ; | _ , + - and = :
+        Punctuation:    'bold ' + content,
+        Comment:        'italic ' + comment,
+        Comment.Single: 'italic ' + comment, # Matches // or ## and on
+        Number:         'bold ' + blue,
+        Name:           'bold ' + violet,
+        Literal:         violet,
+        String:         'italic bg:' + highlight + ' ' + cyan,
+        Keyword:         red,
+        Text:            content,
+    }
+
 def all_styles(code, lexer=PanelcodeLexer(), prefix='test_'):
     print STYLE_MAP.keys()
     for smkey in STYLE_MAP.keys():
@@ -82,3 +132,6 @@ def style_string(code, lexer=PanelcodeLexer(), style='paraiso-dark'):
 
 def style_css(style='paraiso-dark'):
     return HtmlFormatter(style=style).get_style_defs('.highlight')
+
+if __name__ == '__main__':
+    print style_css(style=SolarizedStyle)
