@@ -76,7 +76,8 @@ def parse_fenced_to_html(data_list, mode='replace', panel='open', sizers=True, c
             else:
                 graph_out = '\n```panelcode' + graph + '\n```\n' # data_fence_list[idx-2]
             try:
-                graph_clean = ''.join(decomment(graph.split('\n'), '#'))
+                delims = ['#', '//']
+                graph_clean = ''.join(decomment(graph.split('\n'), delims))
                 pcode_obj = parser.parse(graph_clean, parser.root)
                 html_lines = render.pobj_to_html5_ccs3_grid(pcode_obj)
                 control_str = ''
@@ -98,10 +99,16 @@ def parse_fenced_to_html(data_list, mode='replace', panel='open', sizers=True, c
     return result_list
 
 
-def decomment(item, delim):
-    """Remove whole line and end-of-line comments marked with a delimiter."""
+def decomment(item, delims):
+    """Remove whole line and end-of-line comments marked with delimiters.
+    Checks for a delimiter '#' or a list of delimiters ['#, '//', ...].
+    """
     for itemline in item:
-        seg = itemline.split(delim, 1)[0].strip()
+        if isinstance(delims, basestring):
+            seg = itemline.split(delims, 1)[0].strip()
+        else:
+            for delim in delims:
+                seg = itemline.split(delim, 1)[0].strip()
         if seg != '':
             yield seg
         else:
