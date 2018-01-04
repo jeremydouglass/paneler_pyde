@@ -40,6 +40,11 @@ def parse_fenced_to_html(data_list, mode='replace', panel='open', sizers=True, c
       .removeClass('default small thumb mini micro micro2')
         .addClass( $(this).val() );
     })
+    $('.all-size').change(function(){
+      $('div.gallery')
+      .removeClass('default small thumb mini micro micro2')
+        .addClass( $(this).val() );
+    })
 })
 </script>
 """
