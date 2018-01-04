@@ -19,21 +19,28 @@ kv_word = pp.Suppress(pp.Optional(pp.Literal("."))) + pp.Group(pp.Regex(r"[a-zA-
 attr_word = pp.Suppress(pp.Optional(pp.Literal("."))) + term
 attr_list = pp.ZeroOrMore(attr_word ^ kv_expr ^ kv_word)
 
-panelgroupopts = (pp.Suppress(pp.Literal("{")) +
+b_opt_pg =  pp.Literal("{+") | pp.Literal("{")
+b_opt_l =   pp.Literal("{|") | pp.Literal("{:")
+b_opt_s =   pp.Literal("{;") | pp.Literal("{::")
+b_opt_g =   pp.Literal("{@") | pp.Literal("{:::")
+b_opt_r =  pp.Literal("{!") | pp.Literal("{::::")
+e_opt =     pp.Literal("}")
+
+panelgroupopts = (pp.Suppress(b_opt_pg) +
                   pp.Optional(attr_list) +
-                  pp.Suppress(pp.Literal("}"))).setResultsName('panelgroupopts', listAllMatches=True)
-layoutopts  = (pp.Suppress(pp.Literal("{:")) +
+                  pp.Suppress(e_opt)).setResultsName('panelgroupopts', listAllMatches=True)
+layoutopts  = (pp.Suppress(b_opt_l) +
                pp.Optional(attr_list) +
-               pp.Suppress(pp.Literal("}"))).setResultsName('layoutopts', listAllMatches=True)
-spreadopts  = (pp.Suppress(pp.Literal("{::")) +
+               pp.Suppress(e_opt)).setResultsName('layoutopts', listAllMatches=True)
+spreadopts  = (pp.Suppress(b_opt_s) +
                pp.Optional(attr_list) +
-               pp.Suppress(pp.Literal("}"))).setResultsName('spreadopts', listAllMatches=True)
-galleryopts = (pp.Suppress(pp.Literal("{:::")) +
+               pp.Suppress(e_opt)).setResultsName('spreadopts', listAllMatches=True)
+galleryopts = (pp.Suppress(b_opt_g) +
                pp.Optional(attr_list) +
-               pp.Suppress(pp.Literal("}"))).setResultsName('galleryopts', listAllMatches=True)
-pcodeopts   = (pp.Suppress(pp.Literal("{::::")) +
+               pp.Suppress(e_opt)).setResultsName('galleryopts', listAllMatches=True)
+pcodeopts   = (pp.Suppress(b_opt_r) +
                pp.Optional(attr_list) +
-               pp.Suppress(pp.Literal("}"))).setResultsName('pcodeopts', listAllMatches=True)
+               pp.Suppress(e_opt)).setResultsName('pcodeopts', listAllMatches=True)
 
 ## panelgroups
 
