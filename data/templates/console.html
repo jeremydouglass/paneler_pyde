@@ -1,0 +1,13 @@
+<div style="clear: both;"></div>
+<bdo dir="ltr">
+  <details {{ reveal }} >
+    <summary>{{ summary }}</summary>
+    <select class="{{  css_class }}">
+    {% for option in option_list %}
+      <option value="{{ option }}">{{ option }}</option>
+    {% endfor %}
+    </select>
+    {{ content }}
+  </details>
+</bdo>
+<div style="clear: both;"></div>
