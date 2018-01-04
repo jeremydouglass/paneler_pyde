@@ -14,6 +14,7 @@ class PanelcodeLexer(RegexLexer): # PanelcodeLexer
     tokens = {
         'root': [
             (r'\s+',   Text),                # whitespace
+            (r'//.*?$', Comment),
             (r'#.*?$', Comment),
             (r'\{:*',  Punctuation, 'opts'),
             (r'[\+\,\_\|\;\@]', Operator),
@@ -59,7 +60,8 @@ class PanelcodeLexer(RegexLexer): # PanelcodeLexer
             (r'[^\}\s]+', Name.Attribute)
         ],
         'optarg' : [
-            (r'\'[^\']*\'', String.Single, '#pop'),
+            (r'(\')([^\']*)(\')', bygroups(Punctuation, String.Single, Punctuation), '#pop'),
+            (r'(\")([^\']*)(\")', bygroups(Punctuation, String.Double, Punctuation), '#pop'),
             (r'[0-9]+', Number.Integer, '#pop')
         ]
     }
@@ -79,4 +81,4 @@ def style_string(code, lexer=PanelcodeLexer(), style='paraiso-dark'):
     return html_str
 
 def style_css(style='paraiso-dark'):
-    return HtmlFormatter(style=style).get_style_defs() # '.highlight'
+    return HtmlFormatter(style=style).get_style_defs('.highlight')
