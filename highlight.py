@@ -131,9 +131,11 @@ def all_styles(code, outpath, lexer=PanelcodeLexer(),
             formatter.full = True
             highlight(code, lexer, formatter, outfile=htmlfile)
 
-def style_string(code, lexer=PanelcodeLexer(), style='paraiso-dark'):
+
+def style_string(code, lexer=PanelcodeLexer(), style=SolarizedStyle,
+                 full=False):
     formatter = HtmlFormatter(style=style)
-    # formatter.full = True
+    formatter.full = full
     html_str = highlight(code, lexer, formatter)
     return html_str
 
