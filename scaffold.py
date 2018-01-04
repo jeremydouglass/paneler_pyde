@@ -49,6 +49,7 @@ def images_to_markdown(fpath, fnpattern='*.png', fout='scaffold.md'):
         print(err)
         raise
 
-# images_to_markdown('images/', '*.png', 'scaff.md')
-images_to_markdown('/Users/jeremydouglass/git/panelcode-data/works/Asterios_Polyp/tmb/', '*.jpeg', 'Asterios_Polyp.md')
-
+if __name__ == '__main__':
+    context = '/Users/jeremydouglass/git/panelcode-data/works'
+    images_to_markdown(context + '/Asterios_Polyp/tmb/',
+                       '*.jpeg', 'Asterios_Polyp.md')
