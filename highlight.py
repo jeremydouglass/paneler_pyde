@@ -153,4 +153,8 @@ def style_css(style=SolarizedStyle, inline=False, defs='.highlight'):
 
 
 if __name__ == '__main__':
-    print style_css(style=SolarizedStyle)
+    import os
+    SCRIPT_PATH = os.path.dirname(os.path.realpath(__file__))
+    TEST_CODE = '1 _ 2.b-a _ (r2+1,1)'
+    all_styles(TEST_CODE, SCRIPT_PATH)     # save full html files per-style
+    print style_css(style=SolarizedStyle)  # display css
