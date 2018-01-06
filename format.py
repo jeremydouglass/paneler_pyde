@@ -134,6 +134,7 @@ class PanelcodeGenerator(object):
         self.table = None
 
 
+# pylint: disable=no-self-use
 class PanelcodeFormatter(object):
     """Format Panelcode with minify, compact, flatten, or indent."""
     def __init__(self, mode='flatten'):
@@ -142,7 +143,7 @@ class PanelcodeFormatter(object):
 
     # Decorators
 
-    def _separate_comments(func):
+    def _separate_comments(func):  # pylint: disable=no-self-argument
         """Parse comment blocks separately."""
         @wraps(func)
         def wrapper(self, *args, **kwargs):
@@ -157,13 +158,14 @@ class PanelcodeFormatter(object):
                     if '#' not in item:
                         nargs = list(args)
                         nargs[0] = item
-                        results.append(func(self, *nargs, **kwargs))
+                        results.append(func(  # pylint: disable=not-callable
+                            self, *nargs, **kwargs))
                     else:
                         results.append('  ' + item)
             return '\n'.join(results)
         return wrapper
 
-    def _separate_opts(func):
+    def _separate_opts(func):  # pylint: disable=no-self-argument
         """Parse option blocks separately."""
         @wraps(func)
         def wrapper(self, *args, **kwargs):
@@ -176,18 +178,19 @@ class PanelcodeFormatter(object):
                 if '{' not in item:
                     nargs = list(args)
                     nargs[0] = item
-                    results.append(func(self, *nargs, **kwargs))
+                    results.append(func(  # pylint: disable=not-callable
+                        self, *nargs, **kwargs))
                 else:
                     results.append(re.sub(r'\s+', ' ', item))
             return ''.join(results)
         return wrapper
 
-    def _flatten_opts(func):
+    def _flatten_opts(func):  # pylint: disable=no-self-argument
         """Option block on their own lines."""
         @wraps(func)
         def wrapper(self, *args, **kwargs):
             """decorator wrapper"""
-            string = func(self, *args, **kwargs)
+            string = func(self, *args, **kwargs)  # pylint:disable=not-callable
             string = re.sub(r'({[\@;\|_\+\,\:]+)', r'\n  \1', string)
             return string
         return wrapper
@@ -257,7 +260,8 @@ class PanelcodeFormatter(object):
 
     # Utilities
 
-    def align(self, string, delims, dist='auto', auto_max=50, skip_full=True):
+    def align(self, string, delims,       # pylint: disable=too-many-arguments
+              dist='auto', auto_max=50, skip_full=True):
         """Given a delimiter, create a visually aligned column.
         Respects existing text that makes alignment impossible.
         By default skips "full" comments with no other content.
