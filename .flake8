@@ -1,0 +1,5 @@
+[flake8]
+# E221 multiple spaces before operator
+# E222 multiple spaces after operator
+# E241 multiple spaces after ':'
+ignore = E221, E222, E241
