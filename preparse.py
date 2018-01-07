@@ -10,6 +10,7 @@ import render
 import highlight
 import templates
 
+
 JQUERY_SCRIPT_CDN = """<script
   src="https://code.jquery.com/jquery-2.2.4.min.js"
   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
@@ -64,8 +65,7 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='',
     fences = re.compile(  # see mistune
         r' *(`{3,}|~{3,})( *\S+ *)?\n'  # ```lang (removed)
         r'([\s\S]+?\s*)'
-        r'(\1)(?: *\n+|$)'  # ```
-        )
+        r'(\1)(?: *\n+|$)')  # ```
     data_fence_list = fences.split('\n'.join(data_list))
     if consoles and len(data_fence_list) > 1:
         result_list.extend([JQUERY_SCRIPT_CDN, SIZER_SCRIPT])
@@ -108,8 +108,8 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='',
                                    css_class='all-size',
                                    reveal=reveal)
         result_list.append(console_str)
-    result_list.append('\n<p style="font-size:x-small">'
-                       + '<em>panelcode: fence pre-processor</em></p>\n')
+    result_list.append('\n<p style="font-size:x-small">' +
+                       '<em>panelcode: fence pre-processor</em></p>\n')
     return result_list
 
 
