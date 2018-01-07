@@ -1,4 +1,4 @@
-# {{ pagetitle }}</h1>
+# {{ pagetitle }}
 _{{ datetime }}_
 
 ```panelcode
