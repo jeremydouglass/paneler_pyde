@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """A panelcode parser and renderer."""
 
+from __future__ import print_function
 import argparse
 import os
 import sys
@@ -21,25 +22,23 @@ def decode(args):
             try:
                 sys.stdout.write('\n'.join(result_list))
             except TypeError as err:
-                print err
+                print(err)
         elif args.type == 'markdown':
             try:
                 mdresult = render.pc_md_to_html(data_list)
                 sys.stdout.write(mdresult)
             except TypeError as err:
-                print err
+                print(err)
 
 
 if __name__ == "__main__":
     DESC = """A panelcode parser and renderer."""
     AP = argparse.ArgumentParser(
         description=DESC,
-        epilog='EXAMPLE:\n  python ' + os.path.basename(__file__)
-        + '-t markdown\n \n',
-        formatter_class=argparse.RawDescriptionHelpFormatter
-        )
+        epilog='EXAMPLE:\n  python ' + os.path.basename(__file__) +
+        '-t markdown\n \n',
+        formatter_class=argparse.RawDescriptionHelpFormatter)
     AP.add_argument('-t', '--type', default='fence',
-                    help='set parsing type to fence or markdown'
-                    )
+                    help='set parsing type to fence or markdown')
     CL_ARGS = AP.parse_args()
     decode(CL_ARGS)
