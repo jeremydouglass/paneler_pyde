@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """Syntax highlighting methods for Panelcode.
    Custom lexer built with Pygments, custom style using Solarized colors.
 """

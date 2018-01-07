@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """Panelcode preparse methods for detecting types of panelcode for parsing and
    cleaning, joining, segmenting or labeling them before parsing.
 """

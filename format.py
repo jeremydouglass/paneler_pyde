@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """ Formatting for Panelcode
 Utility functions to support autoformatter methods that can convert Panelcode
 back and forth between different forms, e.g.

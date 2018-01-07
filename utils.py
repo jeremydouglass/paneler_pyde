@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """Utility functions for paneler.
 Used to load data, save rendered output, and preview results.
 Also contains wrappers for picking and status functions.

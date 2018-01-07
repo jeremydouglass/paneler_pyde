@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """Panelcode parsing functions.
 Converts code strings into object trees for rendering.
 Based on an implementation of the EBNF using pyparsing.

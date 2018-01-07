@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """Template wrapping functions for paneler, using Jinja2."""
 
 from jinja2 import Environment

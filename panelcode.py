@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """A panelcode parser and renderer."""
 
 from __future__ import print_function

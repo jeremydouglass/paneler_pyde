@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """Simple unit testing for Processing.py sketches.
 
 A single-tab simple unit testing solution for Processing.py.

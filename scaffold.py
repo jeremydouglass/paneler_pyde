@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """Render a panelcode.md scaffold from a directory of images."""
 
 from __future__ import print_function
