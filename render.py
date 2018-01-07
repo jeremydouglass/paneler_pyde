@@ -110,6 +110,24 @@ def opts_render(opts, get_aw=True, get_kw=True, get_ke=False):
     return " ".join(result)
 
 
+def pobj_counts(pcode_obj):
+    """ simple statistics on a pcode object """
+    pcode = (pcode_obj.asDict())['pcode'][0]  # no multiple pcode blocks - no delimiter
+    counts = { 'galleries': 0, 'spreads': 0, 'layouts': 0, 'panelgroups': 0 }  # , 'panels': 0, 'skips': 0 }
+    galleries = pcode.pop('gallery', '')
+    counts['galleries'] = len(galleries)
+    for gallery in galleries:
+        spreads = gallery.pop('spread', '')
+        counts['spreads'] += len(spreads)
+        for spread in spreads:
+            layouts = spread.pop('layout', '')
+            counts['layouts'] += len(layouts)
+            for layout in layouts:
+                panelgroups = layout.pop('panelgroup', '')
+                counts['panelgroups'] += len(panelgroups)
+    return counts
+
+
 def pobj_to_html5_ccs3_grid(pcode_obj):
     """ convert a parsed panelcode object into html for html5 + css3-grid rendering"""
     html_str = []
