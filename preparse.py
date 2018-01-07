@@ -46,7 +46,7 @@ def console_html(size_list='', content='', summary='panelcode',
     tmpl = templates.load2(filename=template)
     html_str = tmpl.render(summary=summary, option_list=size_list,
                            css_class=css_class, content=content,
-                           reveal=reveal).encode('utf-8')
+                           reveal=reveal)
     return html_str
 
 

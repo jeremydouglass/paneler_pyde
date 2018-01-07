@@ -16,18 +16,21 @@ def decode(args):
 
     data_list = []
     for line in sys.stdin:
-        data_list.append(line)
+        if isinstance(line, unicode):
+            data_list.append(line)
+        else:
+            data_list.append(line.decode('utf8'))
     if data_list:
         if args.type == 'fence':
             result_list = preparse.parse_fenced_to_html(data_list, mode='pre')
             try:
-                sys.stdout.write('\n'.join(result_list))
+                sys.stdout.write('\n'.join(result_list).encode('utf-8'))
             except TypeError as err:
                 print(err)
         elif args.type == 'markdown':
             try:
                 mdresult = render.pc_md_to_html(data_list)
-                sys.stdout.write(mdresult)
+                sys.stdout.write(mdresult.encode('utf-8'))
             except TypeError as err:
                 print(err)
 
