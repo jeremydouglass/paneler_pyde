@@ -9,10 +9,34 @@ back and forth between different forms, e.g.
 -  indent
 """
 
+import argparse
+import os
 import random
 import re
 import textwrap
+import sys
 from functools import wraps
+
+
+def cl_format(args):
+    """Wrapper for dispatching different formatting calls."""
+    data_list = []
+    for line in sys.stdin:
+        if isinstance(line, unicode):
+            data_list.append(line)
+        else:
+            data_list.append(line.decode('utf8'))
+    data = '\n'.join(data_list)
+    formatter = PanelcodeFormatter(args.mode)
+    data = formatter.format(data)
+    if args.align:
+        if args.column:
+            data = formatter.align(data, args.align, int(args.column))
+        else:
+            data = formatter.align(data, args.align)
+    if args.decomment:
+        data = decomment(data, args.decomment)
+    return data
 
 
 def decomment(string, delims=None):
@@ -339,3 +363,29 @@ class PanelcodeFormatter(object):
             if tok in string:
                 string = string.replace(tok, wrap_left + tok + wrap_right)
         return string
+
+
+if __name__ == "__main__":
+    DESC = """Autoformatting of Panelcode. Convert between minified, compact,
+              flat, and indented. Align comment and option blocks.
+              $ cat ex.panelcode.md | python format.py -m flatten -a { -c 25
+              """
+    AP = argparse.ArgumentParser(
+        description=DESC,
+        epilog='EXAMPLE:\n  python ' + os.path.basename(__file__) +
+        '-m flatten -a {\n \n',
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    AP.add_argument('-m', '--mode', default='flatten',
+                    help='set to minify, compact, flatten, indent, or pass')
+    AP.add_argument('-a', '--align', default='',
+                    help='pass a delimiter to align in a column')
+    AP.add_argument('-c', '--column', default='',
+                    help='column distance for delimiter alignment')
+    AP.add_argument('-d', '--decomment', default='#',
+                    help='strip comments')
+    CL_ARGS = AP.parse_args()
+    try:
+        RESULT = cl_format(CL_ARGS)
+        sys.stdout.write(RESULT.encode('utf-8'))
+    except TypeError as err:
+        print err
