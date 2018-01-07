@@ -10,9 +10,9 @@ import pyparsing as pp
 # pylint: disable=invalid-name
 # pylint: disable=line-too-long
 
-## options and attributes
+# options and attributes
 
-term = pp.Word(pp.alphas, pp.alphanums+'-')
+term = pp.Word(pp.alphas, pp.alphanums + '-')
 key = term
 equals = pp.Suppress('=')
 value = pp.Suppress("'") + pp.Regex(r"[^']*") + pp.Suppress("'") | term
@@ -44,7 +44,7 @@ pcodeopts   = (pp.Suppress(b_opt_r) +
                pp.Optional(attr_list) +
                pp.Suppress(e_opt)).setResultsName('pcodeopts', listAllMatches=True)
 
-## panelgroups
+# panelgroups
 
 numrow         = pp.Regex(r"[0-9]*")
 newcol         = pp.Literal("+")
@@ -55,7 +55,8 @@ groupterms     = pp.Suppress(pp.Optional(pp.Suppress(pp.Literal("(")))) + pp.Gro
 panelgroup     = pp.Group((groupterms ^ groupunit) +
                           pp.Optional(panelgroupopts)).setResultsName('panelgroup', listAllMatches=True)
 
-## levels of organization
+# levels of organization
+
 
 layout         = pp.Group(pp.delimitedList(panelgroup, delim="_") +
                           pp.Optional(layoutopts)).setResultsName('layout', listAllMatches=True)
