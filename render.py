@@ -76,7 +76,7 @@ def opts_load(opts):
     kv_words = []
     kv_exprs = {}
     for opt in opts:
-        if isinstance(opt, str):  # attr_word
+        if isinstance(opt, basestring):  # attr_word
             attr_words.append(opt)
         elif isinstance(opt, list):
             if len(opt) == 1:  # attr_word
@@ -186,7 +186,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                     while allopts and pgroup_width == 0:
                         opts = allopts.pop(0)
                         for opt in opts:
-                            if isinstance(opt, str) and opt.startswith('w'):
+                            if isinstance(opt, basestring) and opt.startswith('w'):
                                 pgroup_width = int(opt[1:])
                                 break
                     if pgroup_width == 0:
@@ -204,7 +204,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                                 # ...there should be only one c arg, but the
                                 # max is taken if there are many, 1 if no arg.
                                 c_args = [int(arg[1:]) for arg in panel
-                                          if isinstance(arg, str)
+                                          if isinstance(arg, basestring)
                                           and arg.startswith('c')
                                           and len(arg) > 1
                                           and arg[1:].isdigit()]
@@ -230,7 +230,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                             arg_add = []
                             for idx, arg in enumerate(panel):
                                 # intercept generic u for CSS styling and add count
-                                if arg.startswith('u') and isinstance(arg, str):
+                                if arg.startswith('u') and isinstance(arg, basestring):
                                     if len(arg) == 1:
                                         arg_add.append('u1')
                                     elif len(arg) > 1 and arg[1:].isdigit():
