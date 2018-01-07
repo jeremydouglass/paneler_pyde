@@ -80,17 +80,17 @@ def opts_load(opts):
             attr_words.append(opt)
         elif isinstance(opt, list):
             if len(opt) == 1:  # attr_word
-                attr_words.append(str(opt[0]))
+                attr_words.append(unicode(opt[0]))
             elif len(opt) == 2 and not opt[1]:  # attr_word
-                attr_words.append(str(opt[0]))
+                attr_words.append(unicode(opt[0]))
             elif (len(opt) == 2 and
                   len(opt[0]) == 1 and
-                  str(opt[0]).isalpha() and
-                  str(opt[1]).isdigit()
+                  unicode(opt[0]).isalpha() and
+                  unicode(opt[1]).isdigit()
                   ):  # kv_word
-                kv_words.append(str(opt[0]) + str(opt[1]))
+                kv_words.append(unicode(opt[0]) + unicode(opt[1]))
             else:  # kv_expr
-                kv_exprs[str(opt[0])] = " ".join(opt[1:])
+                kv_exprs[unicode(opt[0])] = " ".join(opt[1:])
     return attr_words, kv_words, kv_exprs
 
 
@@ -105,7 +105,7 @@ def opts_render(opts, get_aw=True, get_kw=True, get_ke=False):
     if get_ke and kv_exprs:
         kve_strs = []
         for item in kv_exprs.items():
-            kve_strs.append(str(item[0]) + "=" + "'" + str(item[1]) + "'")
+            kve_strs.append(unicode(item[0]) + "=" + "'" + unicode(item[1]) + "'")
         result.append(" ".join(kve_strs))
     return " ".join(result)
 
@@ -221,7 +221,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                             row_lengths.append(row_len)
                         # set width to max
                         pgroup_width = max(row_lengths)
-                    panelgroupopts[0][0] = panelgroupopts[0][0] + ' w' + str(pgroup_width)
+                    panelgroupopts[0][0] = panelgroupopts[0][0] + ' w' + unicode(pgroup_width)
                     html_str.append('      <div class="panelgroup ' + panelgroupopts[0][0] + '">')
 
                     for row in row_list:
@@ -274,13 +274,13 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                                             )
                                     elif u_max == 1:
                                         panelcounter += 1
-                                        label = str(panelcounter-panelskip)
+                                        label = unicode(panelcounter-panelskip)
                                         html_str.append(
                                             '        <div class="panel '
                                             + pas + '">' + label + '</div>'
                                             )
                                     else:
-                                        label = str(panelcounter+1-panelskip) + '-' + str(panelcounter+(u_max)-panelskip)
+                                        label = unicode(panelcounter+1-panelskip) + '-' + unicode(panelcounter+(u_max)-panelskip)
                                         html_str.append(
                                             '        <div class="panel '
                                             + pas + '">' + label + '</div>'
@@ -289,7 +289,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                                 # regular panels
                                 else:
                                     panelcounter += 1
-                                    label = str(panelcounter-panelskip)
+                                    label = unicode(panelcounter-panelskip)
                                     html_str.append(
                                         '        <div class="panel '
                                         + pas + '">' + label + '</div>'
@@ -309,7 +309,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                             try:
                                 label_str = os.path.splitext(os.path.basename(kve['img']))[0]
                             except:
-                                label_str = str(g_layout_counter)
+                                label_str = unicode(g_layout_counter)
                             label_str_html = '      <div class="label bottom">' \
                                 + label_str + '</div>'
                     if 'label' in kve:

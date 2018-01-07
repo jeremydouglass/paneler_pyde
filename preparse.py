@@ -76,7 +76,7 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='',
         if idx % 5 == 3:
             result = ''
             if colorize:
-                graph_out = '\n' + str(highlight.style_string(graph)) + '\n'
+                graph_out = '\n' + unicode(highlight.style_string(graph)) + '\n'
             else:
                 graph_out = '\n```panelcode' + graph + '\n```\n'
                 # ... or use data_fence_list[idx-2] -- catches ~~~ etc.
