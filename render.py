@@ -120,12 +120,14 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
         html_str.append('<div class="gallery ' + opts_render(galleryopts[0]) + '">')
 
         spreads = gallery.pop('spread', '')
+        g_layout_counter = 0
         for spread in spreads:
             spreadopts = spread.pop('spreadopts', [['']])  # {:: }
             html_str.append('  <div class="spread ' + opts_render(spreadopts[0]) + '">')
 
             layouts = spread.pop('layout', '')
             for layout in layouts:
+                g_layout_counter += 1
                 panelcounter = 0
                 panelskip = 0  # for blank x z panels
                 layoutopts = layout.pop('layoutopts', [['']])  # {: }
@@ -302,7 +304,10 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                                     opts_render(pcodeopts[0])
                                     ]:
                         if 'autolabel' in opt_str:
-                            label_str = os.path.splitext(os.path.basename(kve['img']))[0]
+                            try:
+                                label_str = os.path.splitext(os.path.basename(kve['img']))[0]
+                            except:
+                                label_str = str(g_layout_counter)
                             label_str_html = '      <div class="label bottom">' \
                                 + label_str + '</div>'
                     if 'label' in kve:
