@@ -3,10 +3,10 @@
 """
 
 from pygments import highlight
-from pygments.formatters import HtmlFormatter
+from pygments.formatters import HtmlFormatter   # pylint: disable=E0611
 from pygments.lexer import bygroups, RegexLexer
 from pygments.token import Comment, Keyword, Literal, Name, Number, \
-                           Operator, Punctuation, String, Text
+    Operator, Punctuation, String, Text
 from pygments.style import Style
 from pygments.styles import STYLE_MAP
 
@@ -22,28 +22,33 @@ class PanelcodeLexer(RegexLexer):
     filenames = ['*.panelcode', '*.pcode', '*.panelcode.txt', '*.pcode.txt']
     tokens = {
         'root': [
-            (r'\s+', Text),                # whitespace
-            (r'//.*?$', Comment),
-            (r'#.*?$', Comment),
-            (r'\{:*', Punctuation, 'opts'),
-            (r'[\+\,\_\|\;\@]', Operator),
-            (r'[\(\)]', Punctuation),
-            (r'\.', Punctuation, 'dotopts'),
-            (r'(\.)([a-z])([0-9])',
+            (r'\s+', Text),                     # whitespace
+            (r'//.*?$', Comment),               # comment, C-style
+            (r'#.*?$', Comment),                # comment, shell-style
+            (r'\{:*', Punctuation, 'opts'),     # opts begin {
+            (r'[\+\,\_\|\;\@]', Operator),      # delimiter
+            (r'[\(\)]', Punctuation),           # optional () - unparsed
+            (r'\.', Punctuation, 'dotopts'),    # dotops: . in c2.r3
+            (r'(\.)([a-z])([0-9])',             # kevval: .c=2
                 bygroups(Punctuation,
                          Name.Attribute,
                          Name.Property)),
-            (r'(\.)([a-z])(\-[0-9a-zA-Z\-]+)', bygroups(Punctuation,
-                                                        Name.Attribute,
-                                                        Name.Property)),
-            (r'(\.)([a-zA-Z][0-9a-zA-Z\-]+)', bygroups(Punctuation,
-                                                       Name.Attribute)),
-            (r'(\.)([a-zA-Z])', bygroups(Punctuation,
-                                         Name.Attribute)),
-            (r'([crw])([0-9]+)', bygroups(Name.Attribute,
-                                          Literal)),
-            (r'([biuxz])([0-9]+)', bygroups(Name.Attribute,
-                                            Literal)),
+            (r'(\.)([a-z])(\-[0-9a-zA-Z\-]+)',
+                bygroups(Punctuation,
+                         Name.Attribute,
+                         Name.Property)),
+            (r'(\.)([a-zA-Z][0-9a-zA-Z\-]+)',
+                bygroups(Punctuation,
+                         Name.Attribute)),
+            (r'(\.)([a-zA-Z])',
+                bygroups(Punctuation,
+                         Name.Attribute)),
+            (r'([crw])([0-9]+)',
+                bygroups(Name.Attribute,
+                         Literal)),
+            (r'([biuxz])([0-9]+)',
+                bygroups(Name.Attribute,
+                         Literal)),
             (r'[a-zA-Z\-][0-9a-zA-Z\-]*', Name.Attribute),
             (r'[0-9]', Number.Integer),
         ],
@@ -83,7 +88,7 @@ class PanelcodeLexer(RegexLexer):
     }
 
 
-class SolarizedStyle(Style):
+class SolarizedStyle(Style):  # pylint: disable=too-few-public-methods
     """Style map for lexed Panelcode.
     Maps Solarized colors to Pygments token class names as CSS definitions.
     """
@@ -92,13 +97,13 @@ class SolarizedStyle(Style):
     default_style = ""
 
     base03 =  '#002b36'  # dark: background
-    base02 =  '#073642'  # dark: bg highlights
-    base01 =  '#586e75'  # dark: comment       -- | light: emphasis
-    base00 =  '#657b83'  # --                  -- | light: content
+    base02 =  '#073642'  # dark: bghighlight
+    base01 =  '#586e75'  # dark: comment    | light: emphasis
+    base00 =  '#657b83'  # --               | light: content
     base0 =   '#839496'  # dark: content
-    base1 =   '#93a1a1'  # dark: emphasis      -- | light: comment
-    base2 =   '#eee8d5'  # --                  -- | light: bg highlights
-    base3 =   '#fdf6e3'  # --                  -- | light: background
+    base1 =   '#93a1a1'  # dark: emphasis   | light: comment
+    base2 =   '#eee8d5'  # --               | light: bghighlights
+    base3 =   '#fdf6e3'  # --               | light: background
     yellow =  '#b58900'
     orange =  '#cb4b16'
     red =     '#dc322f'
@@ -110,16 +115,16 @@ class SolarizedStyle(Style):
 
     if mode == 'dark':
         background_color = base03
-        highlight =  base02
-        comment =    base01
-        content =    base0
-        emphasis =   base1
+        highlight =        base02
+        comment =          base01
+        content =          base0
+        emphasis =         base1
     else:
         background_color = base3
-        highlight =  base2
-        comment =    base1
-        content =    base00
-        emphasis =   base01
+        highlight =        base2
+        comment =          base1
+        content =          base00
+        emphasis =         base01
 
     styles = {
         Operator:       'bold ' + magenta,    # Matches @ ; | _ , + - and = :
@@ -142,7 +147,7 @@ def all_styles(code, outpath, lexer=PanelcodeLexer(),
     lexer token naming will look across a variety of pre-existing styles.
     """
     print STYLE_MAP.keys()
-    for smkey in STYLE_MAP.keys():
+    for smkey in STYLE_MAP.keys():  # pylint: disable=C0201
         fname = outpath + '/' + prefix + smkey + suffix
         with open(fname, 'w') as htmlfile:
             formatter = HtmlFormatter(style=smkey)
