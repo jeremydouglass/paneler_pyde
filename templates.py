@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 """Template wrapping functions for paneler, using Jinja2."""
 
+import os
 from jinja2 import Environment
 from jinja2.loaders import FileSystemLoader
-
-import os
 
 
 def load(abspath='', filename='template.html'):

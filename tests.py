@@ -21,6 +21,7 @@ import parser
 import render
 import utils
 
+
 def run(case=None, out=sys.stdout):
     """Simple test runner.
 
@@ -41,11 +42,13 @@ def run(case=None, out=sys.stdout):
         suite = unittest.TestLoader().loadTestsFromTestCase(case)
     else:
         # load all tests from this module
-        suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
+        suite = unittest.TestLoader().loadTestsFromModule(
+            sys.modules[__name__])
     # run test suite
     unittest.TextTestRunner(stream=out, descriptions=True,
                             verbosity=2, failfast=False, buffer=False,
                             resultclass=None).run(suite)
+
 
 def phtml_equal(pcode_str1, pcode_str2, parselevel=parser.root):
     """For two pcode strings, test if they render the same html string."""
@@ -54,6 +57,7 @@ def phtml_equal(pcode_str1, pcode_str2, parselevel=parser.root):
     pcode_html1 = render.pobj_to_html5_ccs3_grid(pcode_obj1)
     pcode_html2 = render.pobj_to_html5_ccs3_grid(pcode_obj2)
     return pcode_html1 == pcode_html2
+
 
 def item_pair_equalities(test_items):
     """
@@ -66,6 +70,7 @@ def item_pair_equalities(test_items):
     for item1, item2 in (test for test in test_pairs):
         yield phtml_equal(item1, item2)
 
+
 class TestEnvironment(unittest.TestCase):
     """Confirm presence of default named directories and files."""
 
@@ -73,19 +78,24 @@ class TestEnvironment(unittest.TestCase):
         """Check basic directory structure. """
         root = sketchPath()
         self.assertTrue(os.path.isdir(root))
-        self.assertTrue(os.path.isdir(root  + '/data/input'))
-        self.assertTrue(os.path.isdir(root  + '/data/output'))
-        self.assertTrue(os.path.isdir(root  + '/data/templates'))
-        self.assertTrue(os.path.isfile(root + '/data/templates/gallery_css3.html'))
-        self.assertTrue(os.path.isdir(root  + '/styles'))
-        self.assertTrue(os.path.isfile(root  + '/styles/panelcode-grid.css'))
-        self.assertTrue(os.path.isfile(root + '/styles/site.css'))
+        dirs = ['/data/input',
+                '/data/output',
+                '/data/templates',
+                '/styles']
+        for dpath in dirs:
+            self.assertTrue(os.path.isdir(root + dpath))
+        files = ['/data/templates/gallery_css3.html',
+                 '/styles/panelcode-grid.css',
+                 '/styles/site.css']
+        for fpath in files:
+            self.assertTrue(os.path.isfile(root + fpath))
+
 
 class TestPickling(unittest.TestCase):
-    """Test picking and unpicking of panelcode objects."""
+    """Test picking (serializing) and unpicking of panelcode objects."""
 
     def test_load_save_remove(self):
-        """Save, load, and remove pickled (serialized) panelcode pyparsing objects."""
+        """Save, load, and remove pickled panelcode pyparsing object files."""
         pcode_obj = parser.parse("1_2_3", parser.root)
         self.assertFalse(utils.exists('test.pickle'))
         utils.pickle_dump(pcode_obj, 'test.pickle')
@@ -94,6 +104,7 @@ class TestPickling(unittest.TestCase):
         self.assertTrue(pcode_obj.dump(), pcode_obj2.dump())
         utils.pickle_remove('test.pickle')
         self.assertFalse(os.path.exists('test.pickle'))
+
 
 class TestRenderHTML(unittest.TestCase):
     """Test that renders are panelcode-correct and html-valid."""
@@ -138,16 +149,27 @@ class TestRenderHTML(unittest.TestCase):
     def test_simple_rows_commutative(self):
         """Simple row addition is commutative: 1+2 = 2+1."""
         test_sets = []
-        test_sets.append([('1+2', '2+1'), ('2+5', '5+2'), ('10+2', '2+10'),
-                          ('1+2+3', '2+3+1'), ('1+2+3', '3+2+1')])
-        ## build a commutative test set for each level delimiter
-        test_sets.append([('1+2,3', '2+1,3'), ('2+5,3', '5+2,3'), ('10+2,3', '2+10,3'),
+        test_sets.append([('1+2', '2+1'),
+                          ('2+5', '5+2'),
+                          ('10+2', '2+10'),
+                          ('1+2+3', '2+3+1'),
+                          ('1+2+3', '3+2+1')])
+        # build a commutative test set for each level delimiter
+        test_sets.append([('1+2,3', '2+1,3'),
+                          ('2+5,3', '5+2,3'),
+                          ('10+2,3', '2+10,3'),
                           ('11+12,3', '12+11,3')])
-        test_sets.append([('1+2;3', '2+1;3'), ('2+5;3', '5+2;3'), ('10+2;3', '2+10;3'),
+        test_sets.append([('1+2;3', '2+1;3'),
+                          ('2+5;3', '5+2;3'),
+                          ('10+2;3', '2+10;3'),
                           ('11+12;3', '12+11;3')])
-        test_sets.append([('1+2|3', '2+1|3'), ('2+5|3', '5+2|3'), ('10+2|3', '2+10|3'),
+        test_sets.append([('1+2|3', '2+1|3'),
+                          ('2+5|3', '5+2|3'),
+                          ('10+2|3', '2+10|3'),
                           ('11+12|3', '12+11|3')])
-        test_sets.append([('1+2@3', '2+1@3'), ('2+5@3', '5+2@3'), ('10+2@3', '2+10@3'),
+        test_sets.append([('1+2@3', '2+1@3'),
+                          ('2+5@3', '5+2@3'),
+                          ('10+2@3', '2+10@3'),
                           ('11+12@3', '12+11@3')])
         for test_pairs in test_sets:
             for item1, item2 in (pair for pair in test_pairs):
@@ -156,33 +178,44 @@ class TestRenderHTML(unittest.TestCase):
     def test_levels_non_commutative(self):
         """All levels above adjascent units are not commutative."""
         test_sets = []
-        ## build a non-commutative test set for each level delimiter
-        test_sets.append([('1;2', '2;1'), ('2;5', '5;2'), ('10;2', '2;10'),
-                          ('1;2;3', '2;3;1'), ('1;2;3', '3;2;1')])
-        test_sets.append([('1|2', '2|1'), ('2|5', '5|2'), ('10|2', '2|10'),
-                          ('1|2|3', '2|3|1'), ('1|2|3', '3|2|1')])
-        test_sets.append([('1@2', '2@1'), ('2@5', '5@2'), ('10@2', '2@10'),
-                          ('1@2@3', '2@3@1'), ('1@2@3', '3@2@1')])
+        # build a non-commutative test set for each level delimiter
+        test_sets.append([('1;2', '2;1'),
+                          ('2;5', '5;2'),
+                          ('10;2', '2;10'),
+                          ('1;2;3', '2;3;1'),
+                          ('1;2;3', '3;2;1')])
+        test_sets.append([('1|2', '2|1'),
+                          ('2|5', '5|2'),
+                          ('10|2', '2|10'),
+                          ('1|2|3', '2|3|1'),
+                          ('1|2|3', '3|2|1')])
+        test_sets.append([('1@2', '2@1'),
+                          ('2@5', '5@2'),
+                          ('10@2', '2@10'),
+                          ('1@2@3', '2@3@1'),
+                          ('1@2@3', '3@2@1')])
         for test_pairs in test_sets:
             for item1, item2 in (pair for pair in test_pairs):
                 self.assertFalse(phtml_equal(item1, item2))
 
     def test_simple_zero_units(self):
-        """Zero units are NOT commutative, and have no additive identity (not summative)."""
-        ## no additive identity
+        """Zero units are NOT commutative, and have no additive identity
+        (not summative).
+        """
+        # no additive identity
         self.assertFalse(phtml_equal('0', '0+0'))
         self.assertFalse(phtml_equal('0+1', '1'))
         self.assertFalse(phtml_equal('0+5', '5'))
         self.assertFalse(phtml_equal('0+10', '10'))
         self.assertFalse(phtml_equal('0+11', '11'))
-        ## not commutative
+        # not commutative
         self.assertFalse(phtml_equal('0+1', '1+0'))
         self.assertFalse(phtml_equal('0+5', '5+0'))
         self.assertFalse(phtml_equal('0+10', '10+0'))
         self.assertFalse(phtml_equal('0+11', '11+0'))
         self.assertFalse(phtml_equal('1+0+2', '3+0'))
         self.assertFalse(phtml_equal('1+0+2', '0+3'))
-        ## however doesn't interfere with normal units being commutative
+        # however doesn't interfere with normal units being commutative
         self.assertTrue(phtml_equal('1+2+0', '3+0'))
         self.assertTrue(phtml_equal('9+10+0', '19+0'))
 
@@ -200,7 +233,7 @@ class TestRenderHTML(unittest.TestCase):
         """Simple groups can be written with or without parens."""
         self.assertTrue(phtml_equal('(1,1)', '1,1'))
         self.assertTrue(phtml_equal('(2,1)', '2,1'))
-        ## with attributes
+        # with attributes
         self.assertTrue(phtml_equal('(1.r2+1,1)', '1.r2+1,1'))
         self.assertTrue(phtml_equal('(1r2+1,1)', '1r2+1,1'))
         self.assertTrue(phtml_equal('(r2+1,1)', 'r2+1,1'))
@@ -224,7 +257,7 @@ class TestRenderHTML(unittest.TestCase):
         test_items = ['1+2', '1+\n2', '1\n+2', '1\n+\n2']
         test_sets = []
         test_sets.append(test_items)
-        ## build a linebreak test set for each level delimiter
+        # build a linebreak test set for each level delimiter
         test_sets.append([item.replace('+', ',') for item in test_items])
         test_sets.append([item.replace('+', '_') for item in test_items])
         test_sets.append([item.replace('+', ';') for item in test_items])
@@ -236,10 +269,11 @@ class TestRenderHTML(unittest.TestCase):
 
     def test_whitespace_spaces(self):
         """Spaces should not affect level delimiters."""
-        test_items = ['1+2', ' 1+2', '1 +2', '1+ 2', '1+2 ', '1 + 2', ' 1 + 2 ']
+        test_items = ['1+2', ' 1+2', '1 +2', '1+ 2', '1+2 ', '1 + 2',
+                      ' 1 + 2 ']
         test_sets = []
         test_sets.append(test_items)
-        ## build a linebreak test set for each level delimiter
+        # build a linebreak test set for each level delimiter
         test_sets.append([item.replace('+', ',') for item in test_items])
         test_sets.append([item.replace('+', '_') for item in test_items])
         test_sets.append([item.replace('+', ';') for item in test_items])
@@ -251,10 +285,11 @@ class TestRenderHTML(unittest.TestCase):
 
     def test_whitespace_tabs(self):
         """Tabs should not affect level delimiters."""
-        test_items = ['1+2', '\t1+2', '1\t+2', '1+\t2', '1+2\t', '1\t+\t2', '\t1\t+\t2\t']
+        test_items = ['1+2', '\t1+2', '1\t+2', '1+\t2', '1+2\t', '1\t+\t2',
+                      '\t1\t+\t2\t']
         test_sets = []
         test_sets.append(test_items)
-        ## build a linebreak test set for each level delimiter
+        # build a linebreak test set for each level delimiter
         test_sets.append([item.replace('+', ',') for item in test_items])
         test_sets.append([item.replace('+', '_') for item in test_items])
         test_sets.append([item.replace('+', ';') for item in test_items])
@@ -264,7 +299,7 @@ class TestRenderHTML(unittest.TestCase):
             for result in item_pair_equalities(tests):
                 self.assertTrue(result)
 
+
 if __name__ == '__main__':
-    ## Discover and run all tests on main entrypoint.
+    # Discover and run all tests on main entrypoint.
     unittest.main(exit=False)
-    

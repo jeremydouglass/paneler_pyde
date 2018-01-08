@@ -52,14 +52,6 @@ def images_to_markdown(fpath, fnpattern, template):
                            )
     return page_str
 
-# if __name__ == '__main__':
-#     CONTEXT = '/Users/jeremydouglass/git/panelcode-data/works'
-#     images_to_markdown(fpath=CONTEXT + '/Asterios_Polyp/tmb/',
-#                        fnpattern='*.jpeg',
-#                        template='/data/templates/markdown_scaffold.md',
-#                        fout='Asterios_Polyp.panelcode.md'
-#                        )
-
 
 if __name__ == "__main__":
     SCRIPT_PATH = os.path.dirname(os.path.realpath(__file__))

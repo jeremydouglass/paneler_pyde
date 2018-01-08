@@ -12,6 +12,8 @@ from pygments.token import Comment, Keyword, Literal, Name, Number, \
 from pygments.style import Style
 from pygments.styles import STYLE_MAP
 
+# pylint: disable=bad-whitespace
+
 
 class PanelcodeLexer(RegexLexer):
     """Lexer for Panelcode.
