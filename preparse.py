@@ -70,6 +70,8 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='',
     if consoles and len(data_fence_list) > 1:
         result_list.extend([JQUERY_SCRIPT_CDN, SIZER_SCRIPT])
     for idx, graph in enumerate(data_fence_list):
+        if graph == None:
+            continue
         graph = graph.replace('\n\n', '\n')
         if idx % 5 == 0:
             result_list.append(graph)
