@@ -1,5 +1,9 @@
-"""Manage batch processing of files with sources, filtered file lists and task queue."""
+"""Manage batch processing of files.
+   Supports files, file lists, source directories, and source trees.
+   Processing is done out of a task queue, failed files are noted as errors.
+"""
 import os
+
 
 class BatchProcess(object):
     """Manage input and output files and/or folders and pass to a process."""
@@ -13,7 +17,8 @@ class BatchProcess(object):
         self.tasks = []
         self.errors = []
         self.exts = ['.txt']
-        self.template = {'path': '/data/templates', 'file' : 'gallery_css3.html'}
+        self.template = {'path': '/data/templates',
+                         'file': 'gallery_css3.html'}
         for key, value in kwargs.items():
             setattr(self, key, value)
 
@@ -29,11 +34,12 @@ class BatchProcess(object):
         self.clear_sources()
         self.clear_tasks()
         self.clear_errors()
-        ## bump PDE console text
-        for i in range(20):
+        # bump PDE console text
+        for _ in range(20):
             print '\n'
 
     def clear_errors(self):
+        """Clear error queue from BatchProcess."""
         self.errors = []
 
     def clear_sources(self):
@@ -56,14 +62,16 @@ class BatchProcess(object):
         return flist
 
     def get_errors(self):
+        """List error files as basenames only."""
         result = []
         for error in self.errors:
-            result.append(os.path.basename(error[0]) + ':\n   ' + str(error[1]) + '\n')
+            result.append(os.path.basename(error[0]) +
+                          ':\n   ' + str(error[1]) + '\n')
         return result
-    
+
     def get_template(self):
         """Display template string in UI.
-        
+
         Template is stored in a split relative directory
         and file name due convenience when working wtih
         the requirements of the Jinja2 API.
@@ -74,14 +82,14 @@ class BatchProcess(object):
     def list_tree(cls, folder):
         """Return matching absolute paths for a folder and all subfolders."""
         results = []
-        for root, folders, files in os.walk(folder): # pylint:disable = unused-variable
+        for root, _, files in os.walk(folder):
             for fname in files:
                 results.append(os.path.join(root, fname))
         return results
 
     def next(self, **kwargs):
         """Process the next item in the tasks queue.
-        
+
         Works like an iterator that can be reset.
         """
         if self.tasks:
