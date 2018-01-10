@@ -38,7 +38,7 @@ def images_to_markdown(fpath, fnpattern, template):
     """For a group of image files in a source path fpath ('/images')
     matching a file pattern ('*.png') render a panelcode markdown file.
     """
-    tmpl = templates.load2(filename=template)
+    tmpl = templates.load(filename=template)
     fnamelist = fpath_to_fnamelist(fpath, fnpattern)
     results = []
     for fname in fnamelist:

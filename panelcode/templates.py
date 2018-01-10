@@ -15,26 +15,19 @@ def load(abspath='', filename='template.html'):
     pathlist = []
     if abspath:
         pathlist.append(abspath)
-    pathlist.append(sketchPath() + '/data/templates/')
-    pathlist.append(sketchPath() + '/data/')
-    pathlist.append(sketchPath())
-    env = Environment(loader=FileSystemLoader(pathlist))
-    tmpl = env.get_template(filename)
-    return tmpl
-
-
-def load2(abspath='', filename='template.html'):
-    """Load template for rendering -- with sketch defaults.
-       Jinja2 is designed to work only within a relative
-       list established by its Environment.
-    """
-    pathlist = []
-    if abspath:
-        pathlist.append(abspath)
+    # Processing: load sketchPath() if in Processing PDE
+    try:  
+        pathlist.append(sketchPath() + '/data/templates/')
+        pathlist.append(sketchPath() + '/data/')
+        pathlist.append(sketchPath())
+    except NameError:
+        pass
+    # Try current working directory
     pathlist.append(os.getcwd() + '/templates/')
     pathlist.append(os.getcwd() + '/data/templates/')
     pathlist.append(os.getcwd() + '/data/')
     pathlist.append(os.getcwd())
+    # Try relative to script
     script_path = os.path.dirname(os.path.realpath(__file__))
     pathlist.append(script_path + '/templates/')
     pathlist.append(script_path + '/../data/templates/')

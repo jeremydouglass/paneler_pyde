@@ -44,7 +44,7 @@ def console_html(size_list='', content='', summary='panelcode',
     if not size_list:
         size_list = ['', 'default', 'small', 'thumb', 'mini', 'micro2']
     template = 'console.html'
-    tmpl = templates.load2(filename=template)
+    tmpl = templates.load(filename=template)
     html_str = tmpl.render(summary=summary, option_list=size_list,
                            css_class=css_class, content=content,
                            reveal=reveal)
