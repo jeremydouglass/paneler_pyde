@@ -159,6 +159,11 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                     opts_render(pcodeopts[0])
                     )
                 html_str.append(i_before)
+                if 'url' in kve:
+                    if 'http' not in kve['url']:
+                        html_str.append('    <a href="http://'+ kve['url'] +'">')
+                    else:
+                        html_str.append('    <a href="'+ kve['url'] +'">')
                 html_str.append('    <div class="layout ' + opts_render(layoutopts[0]) + '">')
                 label_str_html = ''
 
@@ -338,6 +343,8 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                 except TypeError:
                     pass
                 html_str.append('    </div>')
+                if 'url' in kve:
+                    html_str.append('\n</a>\n')
                 html_str.append(i_after)
             html_str.append('  </div>')
         html_str.append('</div>')
