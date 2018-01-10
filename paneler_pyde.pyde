@@ -29,7 +29,8 @@ ui_list = []
 
 # pylint: disable=bad-whitespace
 cfg = { 'data' : { 'path': '/data/input/'    , 'file' : 'data.panelcode.txt' },
-        'tmpl' : { 'path': '/panelcode/templates' , 'file' : 'gallery_css3.html'  },
+        'tmpl' : { 'path': '/panelcode/templates',
+                   'file': 'gallery_css3_wrap.html'},
         'save' : { 'path': '/data/output/'   , 'file' : 'index.html' }
       }
 # pylint: enable=bad-whitespace
@@ -56,6 +57,7 @@ def reset():
 
     ## user interface
     global ui_list
+    bp.exts = ['.md', '.txt']
 
     ## label
     b_title = Button("PANELER", 0, -4, width, 36)
@@ -156,38 +158,12 @@ def processItem(item, **kwargs):
     print(datapath)
     data = loadStrings(datapath)
 
-    ## strip comment lines
-    dataclean = preparse.decomment(data, '#')
-    data = [dline for dline in dataclean]
+    # parse data
+    html_results = preparse.parse_fenced_to_html(data, mode='pre', fmt='full')
 
-    ## merge into one string
-    pcode_str = '\n'.join(data)
-
-    ## embedded code blocks:
-    ## split on markdown-style codeblock begin-end line delimiters
-    ## and take every second item
-    if '```' in pcode_str:
-        pcode_list = (pcode_str+'\n').split('\n```')[1::2]
-    else:
-        pcode_list = [pcode_str]
-
-    ## parse panelcode to object
-    pcode_objs = []
-    for pcode_str in pcode_list:
-        try:
-            pcode_obj = parser.parse(pcode_str, parser.root)
-            pcode_objs.append(pcode_obj)
-        except parser.pp.ParseException as err:
-            bp.errors.append((item, err))
-    ## render panelcode object to html
-    html_results = []
-    for pcode_obj in pcode_objs:
-        html_lines = render.pobj_to_html5_ccs3_grid(pcode_obj)
-        html_str = '\n'.join(html_lines)
-        html_results.append(html_str)
-
-    ## wrap html in page template
-    html_page_str = tmpl.render(panelcode=html_results, pagetitle=cfg['data']['file'],
+    # wrap html in page template
+    html_page_str = tmpl.render(panelcode=html_results,
+                                pagetitle=cfg['data']['file'],
                                 datetime=datetime.datetime.now())
 
     ## save html page to file

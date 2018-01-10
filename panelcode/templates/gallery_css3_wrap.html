@@ -1,0 +1,22 @@
+<!DOCTYPE html>  
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>{{ page_title }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ pagetitle }}</title>
+  <link rel="stylesheet" href="styles/site.css">
+  <link rel="stylesheet" href="styles/panelcode-grid.css">
+</head>
+
+<body>
+  <div class="wrapper">
+  <h1>{{ pagetitle }}</h1>
+   <p>{{ datetime }}</p>
+{% for item in panelcode %}
+     {{ item }}
+{% endfor %}
+  </div>
+</body>
+</html>
