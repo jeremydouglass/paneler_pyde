@@ -27,6 +27,14 @@ class PanelCodeRenderer(mistune.Renderer):
         # return sys.stdout.write(code)
 
 
+def mdhtml_to_html(data_str):
+    """Complete markdown rendering after panelcode embedded code blocks
+    are rendered."""
+    mdrenderer = mistune.Renderer()
+    markdown = mistune.Markdown(renderer=mdrenderer)
+    return markdown(data_str)
+
+
 def pc_md_to_html(data_list):
     """Render markdown with embedded panelcode to html."""
     pcrenderer = PanelCodeRenderer()

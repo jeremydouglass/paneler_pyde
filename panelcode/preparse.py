@@ -52,7 +52,7 @@ def console_html(size_list='', content='', summary='panelcode',
 
 
 def parse_fenced_to_html(data_list, mode='replace', reveal='',
-                         consoles=True, colorize=True):
+                         consoles=True, colorize=True, fmt='markdown'):
     """Parse panelcode only within markdown fenced code blocks.
     Split a list of lines on fence open and close markers,
     attempt to render code block contents as panelcode or pass through,
@@ -72,9 +72,11 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='',
     for idx, graph in enumerate(data_fence_list):
         if graph == None:
             continue
-        graph = graph.replace('\n\n', '\n')
         if idx % 5 == 0:
-            result_list.append(graph)
+            if fmt == 'full':
+                result_list.append('\n' + render.mdhtml_to_html(graph) + '\n')
+            else:
+                result_list.append(graph)
         if idx % 5 == 3:
             result = ''
             if colorize:
