@@ -12,6 +12,7 @@ class BatchProcess(object):
         self.source_trees = set()
         self.tasks = []
         self.errors = []
+        self.exts = ['.txt']
         self.template = {'path': '/data/templates', 'file' : 'gallery_css3.html'}
         for key, value in kwargs.items():
             setattr(self, key, value)
@@ -45,6 +46,15 @@ class BatchProcess(object):
         """Clear current task queue."""
         self.tasks = []
 
+    def extfilter(self, flist):
+        """Filter file list for extensions."""
+        exts = self.exts
+        if exts:
+            if isinstance(exts, basestring):
+                exts = [exts]
+            flist = [item for item in flist if item.endswith(tuple(exts))]
+        return flist
+
     def get_errors(self):
         result = []
         for error in self.errors:
@@ -61,13 +71,12 @@ class BatchProcess(object):
         return [self.template['path'] + '/' + self.template['file']]
 
     @classmethod
-    def list_tree(cls, folder, ext='.txt'):
+    def list_tree(cls, folder):
         """Return matching absolute paths for a folder and all subfolders."""
         results = []
         for root, folders, files in os.walk(folder): # pylint:disable = unused-variable
             for fname in files:
-                if fname.endswith(ext):
-                    results.append(os.path.join(root, fname))
+                results.append(os.path.join(root, fname))
         return results
 
     def next(self, **kwargs):
@@ -92,7 +101,7 @@ class BatchProcess(object):
         result.extend(self.source_trees)
         return result
 
-    def source_listing(self, ext='.txt'):
+    def source_listing(self):
         """Realize task files from source lists, filtered by extension."""
         result = []
         for fname in self.source_files:
@@ -104,9 +113,7 @@ class BatchProcess(object):
         for tree in self.source_trees:
             for fname in self.list_tree(tree):
                 result.append(fname)
-        if ext:
-            result = [item for item in result if item.endswith(ext)]
-        return result
+        return self.extfilter(result)
 
     def task_names(self):
         """Display short names of items in task queue."""
