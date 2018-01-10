@@ -2,11 +2,16 @@
 
 from __future__ import print_function
 import datetime
-import parser
-import render
-import templates
-import tests
-import utils
+import os
+import sys
+sys.path.append(os.path.join(os.path.dirname(__file__), "panelcode", "libs"))
+
+from panelcode import preparse
+from panelcode import parser
+from panelcode import render
+from panelcode import templates
+from panelcode import tests
+from panelcode import utils
 from batcher.batch import BatchProcess
 from batcher.ui import TextList, Button
 

@@ -35,6 +35,8 @@ def load2(abspath='', filename='template.html'):
     pathlist.append(os.getcwd() + '/data/')
     pathlist.append(os.getcwd())
     script_path = os.path.dirname(os.path.realpath(__file__))
+    pathlist.append(script_path + '/../data/templates/')
+    pathlist.append(script_path + '/../data/')
     pathlist.append(script_path + '/data/templates/')
     pathlist.append(script_path + '/data/')
     pathlist.append(script_path)
