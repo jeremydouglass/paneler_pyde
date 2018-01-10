@@ -29,7 +29,7 @@ ui_list = []
 
 # pylint: disable=bad-whitespace
 cfg = { 'data' : { 'path': '/data/input/'    , 'file' : 'data.panelcode.txt' },
-        'tmpl' : { 'path': '/data/templates' , 'file' : 'gallery_css3.html'  },
+        'tmpl' : { 'path': '/panelcode/templates' , 'file' : 'gallery_css3.html'  },
         'save' : { 'path': '/data/output/'   , 'file' : 'index.html' }
       }
 # pylint: enable=bad-whitespace
