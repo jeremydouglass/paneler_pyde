@@ -152,7 +152,7 @@ def processItem(item, **kwargs):
     data = loadStrings(datapath)
 
     ## strip comment lines
-    dataclean = utils.decomment(data, '#')
+    dataclean = preparse.decomment(data, '#')
     data = [dline for dline in dataclean]
 
     ## merge into one string
