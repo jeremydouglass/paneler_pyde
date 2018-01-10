@@ -50,6 +50,8 @@ def reset():
     bp = BatchProcess(processItem)
     bp.exts = ['.md', '.txt']
     bp.source_trees.add(sketchPath() + '/data')
+    bp.template['path'] = cfg['tmpl']['path']
+    bp.template['file'] = cfg['tmpl']['file']
 
     # label
     b_title = Button("PANELER", 0, -4, width, 36)
