@@ -208,7 +208,7 @@ class PanelcodeFormatter(object):
                         self, *nargs, **kwargs))
                 else:
                     results.append(re.sub(r'\s+', ' ', item))
-            return ''.join(results)
+            return ' '.join(results)
         return wrapper
 
     def _flatten_opts(func):  # pylint: disable=no-self-argument
