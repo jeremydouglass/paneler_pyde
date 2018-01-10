@@ -4,7 +4,12 @@
 Converts code strings into object trees for rendering.
 Based on an implementation of the EBNF using pyparsing.
 """
-import pyparsing as pp
+
+from __future__ import print_function
+try:
+    import panelcode.lib.pyparsing as pp
+except ImportError:
+    import pyparsing as pp
 
 # pylint: disable=bad-whitespace
 # pylint: disable=invalid-name
@@ -30,19 +35,24 @@ e_opt =     pp.Literal("}")
 
 panelgroupopts = (pp.Suppress(b_opt_pg) +
                   pp.Optional(attr_list) +
-                  pp.Suppress(e_opt)).setResultsName('panelgroupopts', listAllMatches=True)
+                  pp.Suppress(e_opt)).setResultsName('panelgroupopts',
+                                                     listAllMatches=True)
 layoutopts  = (pp.Suppress(b_opt_l) +
                pp.Optional(attr_list) +
-               pp.Suppress(e_opt)).setResultsName('layoutopts', listAllMatches=True)
+               pp.Suppress(e_opt)).setResultsName('layoutopts',
+                                                  listAllMatches=True)
 spreadopts  = (pp.Suppress(b_opt_s) +
                pp.Optional(attr_list) +
-               pp.Suppress(e_opt)).setResultsName('spreadopts', listAllMatches=True)
+               pp.Suppress(e_opt)).setResultsName('spreadopts',
+                                                  listAllMatches=True)
 galleryopts = (pp.Suppress(b_opt_g) +
                pp.Optional(attr_list) +
-               pp.Suppress(e_opt)).setResultsName('galleryopts', listAllMatches=True)
+               pp.Suppress(e_opt)).setResultsName('galleryopts',
+                                                  listAllMatches=True)
 pcodeopts   = (pp.Suppress(b_opt_r) +
                pp.Optional(attr_list) +
-               pp.Suppress(e_opt)).setResultsName('pcodeopts', listAllMatches=True)
+               pp.Suppress(e_opt)).setResultsName('pcodeopts',
+                                                  listAllMatches=True)
 
 # panelgroups
 
@@ -61,11 +71,12 @@ panelgroup     = pp.Group((groupterms ^ groupunit) +
 layout         = pp.Group(pp.delimitedList(panelgroup, delim="_") +
                           pp.Optional(layoutopts)).setResultsName('layout', listAllMatches=True)
 spread         = pp.Group(pp.delimitedList(layout, delim="|") +
-                          pp.Optional(spreadopts)).setResultsName('spread', listAllMatches=True) # ++
+                          pp.Optional(spreadopts)).setResultsName('spread', listAllMatches=True)
 gallery        = pp.Group(pp.delimitedList(spread, delim=";") +
                           pp.Optional(galleryopts)).setResultsName('gallery', listAllMatches=True)
 root           = pp.Group(pp.delimitedList(gallery, delim="@") +
-                          pp.Optional(pcodeopts)).setResultsName('pcode', listAllMatches=True) # ;;
+                          pp.Optional(pcodeopts)).setResultsName('pcode', listAllMatches=True)
+
 
 def parse(code_str, parselevel):
     """Parse panelcode string at level parselevel.

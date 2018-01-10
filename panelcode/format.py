@@ -9,6 +9,7 @@ back and forth between different forms, e.g.
 -  indent
 """
 
+from __future__ import print_function
 import argparse
 import os
 import random
@@ -388,4 +389,4 @@ if __name__ == "__main__":
         RESULT = cl_format(CL_ARGS)
         sys.stdout.write(RESULT.encode('utf-8'))
     except TypeError as err:
-        print err
+        print(err)

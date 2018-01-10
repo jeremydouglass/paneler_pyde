@@ -4,13 +4,24 @@
    Custom lexer built with Pygments, custom style using Solarized colors.
 """
 
-from pygments import highlight
-from pygments.formatters import HtmlFormatter   # pylint: disable=E0611
-from pygments.lexer import bygroups, RegexLexer
-from pygments.token import Comment, Keyword, Literal, Name, Number, \
-    Operator, Punctuation, String, Text
-from pygments.style import Style
-from pygments.styles import STYLE_MAP
+from __future__ import print_function
+try:
+    from panelcode.libs.pygments import highlight
+    from panelcode.libs.pygments.formatters import HtmlFormatter
+    from panelcode.libs.pygments.lexer import bygroups, RegexLexer
+    from panelcode.libs.pygments.token import Comment, Keyword, \
+        Literal, Name, Number, Operator, Punctuation, String, Text
+    from panelcode.libs.pygments.style import Style
+    from panelcode.libs.pygments.styles import STYLE_MAP
+except ImportError:
+    from pygments import highlight
+    from pygments.formatters import HtmlFormatter  # pylint: disable=E0611
+    from pygments.lexer import bygroups, RegexLexer
+    from pygments.token import Comment, Keyword, \
+        Literal, Name, Number, Operator, Punctuation, String, Text
+    from pygments.style import Style
+    from pygments.styles import STYLE_MAP
+
 
 # pylint: disable=bad-whitespace
 
@@ -150,7 +161,7 @@ def all_styles(code, outpath, lexer=PanelcodeLexer(),
     A testing class for quickly previewing how a particular approach to
     lexer token naming will look across a variety of pre-existing styles.
     """
-    print STYLE_MAP.keys()
+    # print(STYLE_MAP.keys())
     for smkey in STYLE_MAP.keys():  # pylint: disable=C0201
         fname = outpath + '/' + prefix + smkey + suffix
         with open(fname, 'w') as htmlfile:
@@ -191,5 +202,5 @@ if __name__ == '__main__':
     import os
     SCRIPT_PATH = os.path.dirname(os.path.realpath(__file__))
     TEST_CODE = '1 _ 2.b-a _ (r2+1,1)'
+    # print(style_css(style=SolarizedStyle))  # display css
     all_styles(TEST_CODE, SCRIPT_PATH)     # save full html files per-style
-    print style_css(style=SolarizedStyle)  # display css

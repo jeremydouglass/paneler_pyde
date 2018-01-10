@@ -12,14 +12,16 @@ Use `tests.run()` to auto-discover and run all tests.
 Use `tests.run(TestFoo)` to run one specific test class.
 
 """
+
+from __future__ import print_function
 import unittest
 import itertools
 import os
 import sys
 
-import parser
-import render
-import utils
+import panelcode.parser as parser
+import panelcode.render as render
+import panelcode.utils as utils
 
 
 def run(case=None, out=sys.stdout):

@@ -4,16 +4,17 @@ from __future__ import print_function
 import datetime
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), "panelcode", "libs"))
-
 from panelcode import preparse
-from panelcode import parser
-from panelcode import render
 from panelcode import templates
 from panelcode import tests
 from panelcode import utils
-from batcher.batch import BatchProcess
-from batcher.ui import TextList, Button
+try:
+    from panelcode.libs.batcher.batch import BatchProcess
+    from panelcode.libs.batcher.ui import TextList, Button
+except ImportError:
+    from batcher.batch import BatchProcess
+    from batcher.ui import TextList, Button
+sys.path.append(os.path.join(os.path.dirname(__file__), "panelcode", "libs"))
 
 # pylint: disable=invalid-name
 

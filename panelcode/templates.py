@@ -2,9 +2,14 @@
 # -*- coding: utf-8 -*-
 """Template wrapping functions for paneler, using Jinja2."""
 
+from __future__ import print_function
 import os
-from jinja2 import Environment
-from jinja2.loaders import FileSystemLoader
+try:
+    from panelcode.libs.jinja2 import Environment
+    from panelcode.libs.jinja2.loaders import FileSystemLoader
+except ImportError:
+    from jinja2 import Environment
+    from jinja2.loaders import FileSystemLoader
 
 
 def load(abspath='', filename='template.html'):
@@ -16,7 +21,7 @@ def load(abspath='', filename='template.html'):
     if abspath:
         pathlist.append(abspath)
     # Processing: load sketchPath() if in Processing PDE
-    try:  
+    try:
         pathlist.append(sketchPath() + '/data/templates/')
         pathlist.append(sketchPath() + '/data/')
         pathlist.append(sketchPath())

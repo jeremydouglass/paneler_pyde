@@ -7,8 +7,7 @@ import argparse
 import datetime
 import fnmatch
 import os
-
-import templates
+import panelcode.templates as templates
 
 
 def fpath_to_fnamelist(fpath, fnpattern):

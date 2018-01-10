@@ -2,10 +2,14 @@
 # -*- coding: utf-8 -*-
 """Render panelcode into target output formats."""
 
+from __future__ import print_function
 import os
-import mistune
-import preparse
-import parser
+import panelcode.parser as parser
+import panelcode.preparse as preparse
+try:
+    import panelcode.libs.mistune as mistune
+except ImportError:
+    import mistune
 
 
 class PanelCodeRenderer(mistune.Renderer):
@@ -121,7 +125,8 @@ def opts_render(opts, get_aw=True, get_kw=True, get_ke=False):
 def pobj_counts(pcode_obj):
     """ simple statistics on a pcode object """
     pcode = (pcode_obj.asDict())['pcode'][0]  # no multiple pcode blocks - no delimiter
-    counts = { 'galleries': 0, 'spreads': 0, 'layouts': 0, 'panelgroups': 0 }  # , 'panels': 0, 'skips': 0 }
+    counts = {'galleries': 0, 'spreads': 0, 'layouts': 0, 'panelgroups': 0}
+    # , 'panels': 0, 'skips': 0 }
     galleries = pcode.pop('gallery', '')
     counts['galleries'] = len(galleries)
     for gallery in galleries:

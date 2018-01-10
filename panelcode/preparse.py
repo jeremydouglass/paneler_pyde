@@ -4,11 +4,12 @@
    cleaning, joining, segmenting or labeling them before parsing.
 """
 
+from __future__ import print_function
 import re
-import parser
-import render
-import highlight
-import templates
+import panelcode.parser as parser
+import panelcode.render as render
+import panelcode.highlight as highlight
+import panelcode.templates as templates
 
 
 JQUERY_SCRIPT_CDN = """<script
@@ -70,7 +71,7 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='',
     if consoles and len(data_fence_list) > 1:
         result_list.extend([JQUERY_SCRIPT_CDN, SIZER_SCRIPT])
     for idx, graph in enumerate(data_fence_list):
-        if graph == None:
+        if graph is None:
             continue
         if idx % 5 == 0:
             if fmt == 'full':
@@ -80,7 +81,8 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='',
         if idx % 5 == 3:
             result = ''
             if colorize:
-                graph_out = '\n' + unicode(highlight.style_string(graph)) + '\n'
+                graph_out = unicode(highlight.style_string(graph))
+                graph_out = '\n' + graph_out + '\n'
             else:
                 graph_out = '\n```panelcode' + graph + '\n```\n'
                 # ... or use data_fence_list[idx-2] -- catches ~~~ etc.
