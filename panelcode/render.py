@@ -187,7 +187,7 @@ def pc_md_to_html(data_list):
     return markdown("\n".join(data_list) + label)
 
 
-def img_render(kve, lopt_str, sopt_str, gopt_str, popt_str):
+def img_render(kve, lopt_str, sopt_str, gopt_str, popt_str, img_path):
     """Render image preview strings based on settings."""
     i_before = ''
     i_layer = ''
@@ -206,7 +206,7 @@ def img_render(kve, lopt_str, sopt_str, gopt_str, popt_str):
                 + i_label_str + '</div>'
         img_tag_str = ''
         for idx, path in enumerate(img_paths):
-            img_tag_str = img_tag_str + '<img src="' + img_paths[idx] + '"/>'
+            img_tag_str = img_tag_str + '<img src="' + img_path + img_paths[idx] + '"/>'
         for opt_str in [popt_str, gopt_str, sopt_str, lopt_str]:
             if 'ibefore' in opt_str:
                 i_before = '    <div class="layout ' + lopt_str \
@@ -286,10 +286,15 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
     html_str = []
     pcode = (pcode_obj.asDict())['pcode'][0]  # no multiple pcode blocks - no delimiter
     pcodeopts = pcode.pop('pcodeopts', [['']])  # {:::: } # pcodeopts = pcode['pcodeopts']
-
+    
     galleries = pcode.pop('gallery', '')
     for gallery in galleries:
         galleryopts = gallery.pop('galleryopts', [['']])  # {::: }
+        gkve = opts_load(galleryopts[0])[2]  # aw, kvw, kvw =
+        try:
+            imgpath = gkve['imgpath']
+        except KeyError:
+            imgpath = ''
         html_str.append('<div class="gallery ' + opts_render(galleryopts[0]) + '">')
 
         spreads = gallery.pop('spread', '')
@@ -309,7 +314,8 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                     kve, opts_render(layoutopts[0]),
                     opts_render(spreadopts[0]),
                     opts_render(galleryopts[0]),
-                    opts_render(pcodeopts[0])
+                    opts_render(pcodeopts[0]),
+                    imgpath
                     )
                 html_str.append(i_before)
                 if 'url' in kve:
