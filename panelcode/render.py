@@ -139,6 +139,15 @@ def parse_graph_to_html(graph, mode='replace', reveal='',
     return result
 
 
+def decomment(string):
+    # as per https://regex101.com/r/yt1Xfy/1
+    # the Group 1 umbrella capturing group compiles everything
+    # that should be preserved (if anything).
+    pattern = r"//.*|/\*[\s\S]*?\*/|(\"(\\.|[^\"])*\"|'(\\.|[^\'])*')"
+    regex = re.compile(pattern)
+    return regex.sub(lambda m: m.group(1), string)
+
+
 def decomment2(item, delims):
     """Remove whole line and end-of-line comments marked with delimiters.
     Checks for a delimiter '#' or a list of delimiters ['#, '//', ...].
@@ -154,6 +163,47 @@ def decomment2(item, delims):
         else:
             # align line numbers in oarse error checking with original
             yield ''
+
+
+def decomment3(item, delims):
+    """Remove whole line and end-of-line comments marked with delimiters.
+    Checks for a delimiter '#' or a list of delimiters ['#, '//', ...].
+    """
+    for itemline in item:
+        if isinstance(delims, basestring):
+            delims = [delims]
+        for delim in delims:
+            seg = itemline.split(delim, 1)[0].strip()
+        if seg != '':
+            yield seg
+        else:
+            # align line numbers in oarse error checking with original
+            yield ''
+
+
+def remove_comments(string):
+    # as per https://stackoverflow.com/a/18381470/7207622
+    pattern = r"(\".*?\"|\'.*?\')|(/\*.*?\*/|//[^\r\n]*$)"
+    # first group captures quoted strings (double or single)
+    # second group captures comments (//single-line or /* multi-line */)
+    regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
+    def _replacer(match):
+        # if the 2nd group (capturing comments) is not None,
+        # it means we have captured a non-quoted (real) comment string.
+        if match.group(2) is not None:
+            return "" # so we will return empty to remove the comment
+        else: # otherwise, we will return the 1st group
+            return match.group(1) # captured quoted-string
+    return regex.sub(_replacer, string)
+
+
+def decomment4(string):
+    # as per https://regex101.com/r/yt1Xfy/1
+    # the Group 1 umbrella capturing group compiles everything
+    # that should be preserved (if anything).
+    pattern = r"//.*|/\*[\s\S]*?\*/|(\"(\\.|[^\"])*\"|'(\\.|[^\'])*')"
+    regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
+    return re.sub(regex, string, r'\1')
 
 
 class PanelCodeRenderer(mistune.Renderer):
