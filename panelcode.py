@@ -8,8 +8,8 @@ import os
 import sys
 from panelcode import preparse
 from panelcode import render
-sys.path.append(os.path.join(os.path.dirname(__file__), "panelcode", "libs"))
 
+import panelcode
 
 def decode(args):
     """Read in panelcode or embedded document stream, emit html rendering."""

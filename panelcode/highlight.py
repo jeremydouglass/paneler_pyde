@@ -5,22 +5,13 @@
 """
 
 from __future__ import print_function
-try:
-    from panelcode.libs.pygments import highlight
-    from panelcode.libs.pygments.formatters import HtmlFormatter
-    from panelcode.libs.pygments.lexer import bygroups, RegexLexer
-    from panelcode.libs.pygments.token import Comment, Keyword, \
-        Literal, Name, Number, Operator, Punctuation, String, Text
-    from panelcode.libs.pygments.style import Style
-    from panelcode.libs.pygments.styles import STYLE_MAP
-except ImportError:
-    from pygments import highlight
-    from pygments.formatters import HtmlFormatter  # pylint: disable=E0611
-    from pygments.lexer import bygroups, RegexLexer
-    from pygments.token import Comment, Keyword, \
-        Literal, Name, Number, Operator, Punctuation, String, Text
-    from pygments.style import Style
-    from pygments.styles import STYLE_MAP
+from pygments import highlight
+from pygments.formatters import HtmlFormatter  # pylint: disable=E0611
+from pygments.lexer import bygroups, RegexLexer
+from pygments.token import Comment, Keyword, \
+    Literal, Name, Number, Operator, Punctuation, String, Text
+from pygments.style import Style
+from pygments.styles import STYLE_MAP
 
 
 # pylint: disable=bad-whitespace

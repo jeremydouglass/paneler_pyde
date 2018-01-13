@@ -5,16 +5,13 @@ import datetime
 import os
 import sys
 from panelcode import preparse
+
+import panelcode
 from panelcode import templates
 from panelcode import tests
 from panelcode import utils
-try:
-    from panelcode.libs.batcher.batch import BatchProcess
-    from panelcode.libs.batcher.ui import TextList, Button
-except ImportError:
-    from batcher.batch import BatchProcess
-    from batcher.ui import TextList, Button
-sys.path.append(os.path.join(os.path.dirname(__file__), "panelcode", "libs"))
+from batcher.batch import BatchProcess
+from batcher.ui import TextList, Button
 
 # pylint: disable=invalid-name
 
