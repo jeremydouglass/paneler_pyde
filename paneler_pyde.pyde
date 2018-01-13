@@ -4,9 +4,9 @@ from __future__ import print_function
 import datetime
 import os
 import sys
-from panelcode import preparse
 
 import panelcode
+from panelcode import render
 from panelcode import templates
 from panelcode import tests
 from panelcode import utils
@@ -152,7 +152,7 @@ def processItem(item, **kwargs):
     data = loadStrings(datapath)
 
     # parse data
-    html_results = preparse.parse_fenced_to_html(data, mode='pre', fmt='full')
+    html_results = render.parse_fenced_to_html(data, mode='pre', fmt='full')
 
     # wrap html in page template
     html_page_str = tmpl.render(panelcode=html_results,
