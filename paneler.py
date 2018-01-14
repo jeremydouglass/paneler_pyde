@@ -28,8 +28,8 @@ def decode(args):
                 print(err)
         elif args.type == 'markdown':
             try:
-                mdresult = render.pc_md_to_html(data_list)
-                sys.stdout.write(mdresult.encode('utf-8'))
+                result_list = render.parse_fenced_to_html(data_list, mode='pre', fmt='full')
+                sys.stdout.write('\n'.join(result_list).encode('utf-8'))
             except TypeError as err:
                 print(err)
 
