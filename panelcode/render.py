@@ -84,34 +84,8 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='',
             else:
                 result_list.append(graph)
         if idx % 5 == 3:
-            result = ''
-            if colorize:
-                graph_out = unicode(highlight.style_string(graph))
-                graph_out = '\n' + graph_out + '\n'
-            else:
-                graph_out = '\n```panelcode' + graph + '\n```\n'
-                # ... or use data_fence_list[idx-2] -- catches ~~~ etc.
-            try:
-                delims = ['#', '//']
-                graph_clean = ''.join(decomment2(graph.split('\n'), delims))
-                pcode_obj = parser.parse(graph_clean, parser.root)
-                html_lines = pobj_to_html5_ccs3_grid(pcode_obj)
-                console_str = ''
-                if consoles or 'console' in graph:
-                    if 'noconsole' not in graph:
-                        console_str = console_html(content=graph_out,
-                                                   css_class='gallery-size',
-                                                   reveal=reveal)
-                if mode == 'pre':
-                    html_lines.insert(-1, console_str)
-                    result += ''.join(html_lines)
-                elif mode == 'post':
-                    result += '\n' + graph_out + '\n'
-                    result += ''.join(html_lines)
-                elif mode == 'replace':
-                    result = ''.join(html_lines)
-            except parser.pp.ParseException:
-                result = graph_out
+            result = parse_graph_to_html(graph, mode, reveal,
+                                         consoles, colorize)
             result_list.append(result)
     if consoles and len(data_fence_list) > 1:
         console_str = console_html(content='',
@@ -122,6 +96,47 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='',
     result_list.append('\n<p style="font-size:x-small">' +
                        '<em>panelcode: fence pre-processor</em></p>\n')
     return result_list
+
+
+def parse_graph_to_html(graph, mode='replace', reveal='',
+                         consoles=True, colorize=True):
+    """Parse panelcode only within markdown fenced code blocks.
+    Split a list of lines on fence open and close markers,
+    attempt to render code block contents as panelcode or pass through,
+    return a list of unchanged contents and possibly changed blocks.
+
+    Results can replace the code block ('replace') or come
+    before or after it ('pre' / 'post')
+    """
+    result = ''
+    if colorize:
+        graph_out = unicode(highlight.style_string(graph))
+        graph_out = '\n' + graph_out + '\n'
+    else:
+        graph_out = '\n```panelcode' + graph + '\n```\n'
+        # ... or use data_fence_list[idx-2] -- catches ~~~ etc.
+    try:
+        delims = ['#', '//']
+        graph_clean = ''.join(decomment2(graph.split('\n'), delims))
+        pcode_obj = parser.parse(graph_clean, parser.root)
+        html_lines = pobj_to_html5_ccs3_grid(pcode_obj)
+        console_str = ''
+        if consoles or 'console' in graph:
+            if 'noconsole' not in graph:
+                console_str = console_html(content=graph_out,
+                                           css_class='gallery-size',
+                                           reveal=reveal)
+        if mode == 'pre':
+            html_lines.insert(-1, console_str)
+            result += ''.join(html_lines)
+        elif mode == 'post':
+            result += '\n' + graph_out + '\n'
+            result += ''.join(html_lines)
+        elif mode == 'replace':
+            result = ''.join(html_lines)
+    except parser.pp.ParseException:
+        result = graph_out
+    return result
 
 
 def decomment2(item, delims):
@@ -148,9 +163,8 @@ class PanelCodeRenderer(mistune.Renderer):
         if lang == 'panelcode':
             try:
                 graph = ''.join(decomment2(code.split('\n'), '#'))
-                pcode_obj = parser.parse(graph, parser.root)
-                html_lines = pobj_to_html5_ccs3_grid(pcode_obj)
-                html_str = ''.join(html_lines)
+                html_str = parse_graph_to_html(graph, mode='replace',
+                    reveal='', consoles=True, colorize=True)
             except parser.pp.ParseException:
                 html_str = '\n<pre><code>%s</code></pre>\n' % code
                 # mistune.escape(code)
