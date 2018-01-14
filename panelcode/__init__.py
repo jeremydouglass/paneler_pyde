@@ -1,6 +1,6 @@
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), "libs"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "libs"))
 
 import batcher
 import jinja2
