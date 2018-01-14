@@ -158,7 +158,7 @@ def decomment2(item, delims):
 
 class PanelCodeRenderer(mistune.Renderer):
     """Render full markdown document with fenced panelcode blocks"""
-    def block_code(self, code, lang):
+    def block_code(self, code, lang=None):
         html_str = ''
         if lang == 'panelcode':
             try:
