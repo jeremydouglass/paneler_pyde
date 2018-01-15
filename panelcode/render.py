@@ -56,7 +56,7 @@ def console_html(size_list='', content='', summary='panelcode',
     return html_str
 
 
-def parse_fenced_to_html(data_list, mode='replace', reveal='',
+def parse_fenced_to_html(data_list, mode='replace', reveal='open',
                          consoles=True, colorize=True, fmt='markdown'):
     """Parse panelcode only within markdown fenced code blocks.
     Split a list of lines on fence open and close markers,
