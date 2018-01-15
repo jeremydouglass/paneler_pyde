@@ -71,7 +71,7 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='open',
         r' *(`{3,}|~{3,})( *\S+ *)?\n'  # ```lang (removed)
         r'([\s\S]+?\s*)'
         r'(\1)(?: *\n+|$)')  # ```
-    data_fence_list = fences.split(''.join(data_list))
+    data_fence_list = fences.split('\n'.join(data_list))
     if consoles and len(data_fence_list) > 1:
         result_list.extend([JQUERY_SCRIPT_CDN, SIZER_SCRIPT])
     for idx, graph in enumerate(data_fence_list):
