@@ -78,7 +78,7 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='',
         if graph is None:
             continue
         if idx % 5 == 0:
-            if fmt == 'html':
+            if fmt == 'html' or 'htmlfull':
                 result_list.append(mdhtml_to_html(graph))
             else:
                 result_list.append(graph)
@@ -94,6 +94,19 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='',
         result_list.append(console_str)
     result_list.append('<p style="font-size:x-small">' +
                        '<em>panelcode: fence pre-processor</em></p>\n')
+    if fmt == 'htmlfull':
+        result_list = html_page_wrapper(result_list)
+    return result_list
+
+
+def html_page_wrapper(data_list, pagetitle='', template='html_page.html'):
+    """Wrap html contents in a full panelcode html page with styles.
+    Styles_inline copies the style information into the page itself,
+    rather than pointing to external stylesheets.
+    """
+    tmpl = templates.load(filename=template)
+    html_page_str = tmpl.render(contents=data_list, pagetitle=pagetitle)
+    result_list = html_page_str.split('\n')
     return result_list
 
 

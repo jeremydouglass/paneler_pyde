@@ -20,18 +20,11 @@ def decode(args):
         else:
             data_list.append(line.decode('utf8'))
     if data_list:
-        if args.type == 'markdown':
-            result_list = render.parse_fenced_to_html(data_list, mode='pre')
-            try:
-                sys.stdout.write('\n'.join(result_list).encode('utf-8'))
-            except TypeError as err:
-                print(err)
-        elif args.type == 'html':
-            try:
-                result_list = render.parse_fenced_to_html(data_list, mode='pre', fmt='html')
-                sys.stdout.write('\n'.join(result_list).encode('utf-8'))
-            except TypeError as err:
-                print(err)
+        result_list = render.parse_fenced_to_html(data_list, mode='pre', fmt=args.type)
+        try:
+            sys.stdout.write('\n'.join(result_list).encode('utf-8'))
+        except TypeError as err:
+            print(err)
 
 
 if __name__ == "__main__":
@@ -42,6 +35,6 @@ if __name__ == "__main__":
         '-t markdown\n \n',
         formatter_class=argparse.RawDescriptionHelpFormatter)
     AP.add_argument('-t', '--type', default='markdown',
-                    help='set output type to md or html')
+                    help='set output type to: markdown, html, htmlpage')
     CL_ARGS = AP.parse_args()
     decode(CL_ARGS)
