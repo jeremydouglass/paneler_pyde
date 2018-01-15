@@ -116,8 +116,7 @@ def parse_graph_to_html(graph, mode='replace', reveal='',
         graph_out = '\n```panelcode' + graph + '\n```\n'
         # ... or use data_fence_list[idx-2] -- catches ~~~ etc.
     try:
-        delims = ['#', '//']
-        graph_clean = ''.join(decomment2(graph.split('\n'), delims))
+        graph_clean = ''.join(decomment(graph))
         pcode_obj = parser.parse(graph_clean, parser.root)
         html_lines = pobj_to_html5_ccs3_grid(pcode_obj)
         console_str = ''
@@ -140,70 +139,18 @@ def parse_graph_to_html(graph, mode='replace', reveal='',
 
 
 def decomment(string):
-    # as per https://regex101.com/r/yt1Xfy/1
-    # the Group 1 umbrella capturing group compiles everything
-    # that should be preserved (if anything).
+    """Remove whole line and end-of-line comments marked with delimiters.
+    Checks for a delimiter '#' or a list of delimiters ['#, '//', ...].
+
+    Design based on: https://regex101.com/r/yt1Xfy/1
+    Test: https://regex101.com/r/kB5kA4/1
+
+    The Group 1 umbrella capturing group compiles everything
+    that should be preserved (if anything).
+    """
     pattern = r"//.*|/\*[\s\S]*?\*/|(\"(\\.|[^\"])*\"|'(\\.|[^\'])*')"
     regex = re.compile(pattern)
     return regex.sub(lambda m: m.group(1), string)
-
-
-def decomment2(item, delims):
-    """Remove whole line and end-of-line comments marked with delimiters.
-    Checks for a delimiter '#' or a list of delimiters ['#, '//', ...].
-    """
-    for itemline in item:
-        if isinstance(delims, basestring):
-            seg = itemline.split(delims, 1)[0].strip()
-        else:
-            for delim in delims:
-                seg = itemline.split(delim, 1)[0].strip()
-        if seg != '':
-            yield seg
-        else:
-            # align line numbers in oarse error checking with original
-            yield ''
-
-
-def decomment3(item, delims):
-    """Remove whole line and end-of-line comments marked with delimiters.
-    Checks for a delimiter '#' or a list of delimiters ['#, '//', ...].
-    """
-    for itemline in item:
-        if isinstance(delims, basestring):
-            delims = [delims]
-        for delim in delims:
-            seg = itemline.split(delim, 1)[0].strip()
-        if seg != '':
-            yield seg
-        else:
-            # align line numbers in oarse error checking with original
-            yield ''
-
-
-def remove_comments(string):
-    # as per https://stackoverflow.com/a/18381470/7207622
-    pattern = r"(\".*?\"|\'.*?\')|(/\*.*?\*/|//[^\r\n]*$)"
-    # first group captures quoted strings (double or single)
-    # second group captures comments (//single-line or /* multi-line */)
-    regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
-    def _replacer(match):
-        # if the 2nd group (capturing comments) is not None,
-        # it means we have captured a non-quoted (real) comment string.
-        if match.group(2) is not None:
-            return "" # so we will return empty to remove the comment
-        else: # otherwise, we will return the 1st group
-            return match.group(1) # captured quoted-string
-    return regex.sub(_replacer, string)
-
-
-def decomment4(string):
-    # as per https://regex101.com/r/yt1Xfy/1
-    # the Group 1 umbrella capturing group compiles everything
-    # that should be preserved (if anything).
-    pattern = r"//.*|/\*[\s\S]*?\*/|(\"(\\.|[^\"])*\"|'(\\.|[^\'])*')"
-    regex = re.compile(pattern, re.MULTILINE|re.DOTALL)
-    return re.sub(regex, string, r'\1')
 
 
 class PanelCodeRenderer(mistune.Renderer):
@@ -212,7 +159,7 @@ class PanelCodeRenderer(mistune.Renderer):
         html_str = ''
         if lang == 'panelcode':
             try:
-                graph = ''.join(decomment2(code.split('\n'), '#'))
+                graph = ''.join(decomment(code))
                 html_str = parse_graph_to_html(graph, mode='replace',
                     reveal='', consoles=True, colorize=True)
             except parser.pp.ParseException:
