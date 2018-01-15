@@ -153,7 +153,7 @@ def processItem(item, **kwargs):
     data = loadStrings(datapath)
 
     # parse data
-    html_results = render.parse_fenced_to_html(data, mode='pre', fmt='full')
+    html_results = render.parse_fenced_to_html(data, mode='pre', fmt='html')
 
     # wrap html in page template
     html_page_str = tmpl.render(panelcode=html_results,

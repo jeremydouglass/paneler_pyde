@@ -79,7 +79,7 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='',
         if graph is None:
             continue
         if idx % 5 == 0:
-            if fmt == 'full':
+            if fmt == 'html':
                 result_list.append('\n' + mdhtml_to_html(graph) + '\n')
             else:
                 result_list.append(graph)

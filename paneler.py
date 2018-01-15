@@ -20,15 +20,15 @@ def decode(args):
         else:
             data_list.append(line.decode('utf8'))
     if data_list:
-        if args.type == 'fence':
+        if args.type == 'markdown':
             result_list = render.parse_fenced_to_html(data_list, mode='pre')
             try:
                 sys.stdout.write('\n'.join(result_list).encode('utf-8'))
             except TypeError as err:
                 print(err)
-        elif args.type == 'markdown':
+        elif args.type == 'html':
             try:
-                result_list = render.parse_fenced_to_html(data_list, mode='pre', fmt='full')
+                result_list = render.parse_fenced_to_html(data_list, mode='pre', fmt='html')
                 sys.stdout.write('\n'.join(result_list).encode('utf-8'))
             except TypeError as err:
                 print(err)
@@ -41,7 +41,7 @@ if __name__ == "__main__":
         epilog='EXAMPLE:\n  python ' + os.path.basename(__file__) +
         '-t markdown\n \n',
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    AP.add_argument('-t', '--type', default='fence',
-                    help='set parsing type to fence or markdown')
+    AP.add_argument('-t', '--type', default='markdown',
+                    help='set output type to md or html')
     CL_ARGS = AP.parse_args()
     decode(CL_ARGS)
