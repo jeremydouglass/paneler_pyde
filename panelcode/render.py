@@ -111,7 +111,7 @@ def html_page_wrapper(data_list, pagetitle='', template='html_page.html'):
 
 
 def parse_graph_to_html(graph, mode='replace', reveal='',
-                         consoles=True, colorize=True):
+                        consoles=True, colorize=True):
     """Parse panelcode only within markdown fenced code blocks.
     Split a list of lines on fence open and close markers,
     attempt to render code block contents as panelcode or pass through,
@@ -297,7 +297,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
     html_str = []
     pcode = (pcode_obj.asDict())['pcode'][0]  # no multiple pcode blocks - no delimiter
     pcodeopts = pcode.pop('pcodeopts', [['']])  # {:::: } # pcodeopts = pcode['pcodeopts']
-    
+
     galleries = pcode.pop('gallery', '')
     for gallery in galleries:
         galleryopts = gallery.pop('galleryopts', [['']])  # {::: }
@@ -331,9 +331,9 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                 html_str.append(i_before)
                 if 'url' in kve:
                     if 'http' not in kve['url']:
-                        html_str.append('    <a href="http://'+ kve['url'] +'">' + '\n')
+                        html_str.append('    <a href="http://' + kve['url'] +'">' + '\n')
                     else:
-                        html_str.append('    <a href="'+ kve['url'] +'">' + '\n')
+                        html_str.append('    <a href="' + kve['url'] +'">' + '\n')
                 html_str.append('    <div class="layout ' + opts_render(layoutopts[0]) + '">' + '\n')
                 label_str_html = ''
 
@@ -473,7 +473,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                                             + pas + '">' + label + '</div>' + '\n'
                                             )
                                     else:
-                                        label = unicode(panelcounter+1-panelskip) + '-' + unicode(panelcounter+(u_max)-panelskip)
+                                        label = unicode(panelcounter+1-panelskip) + '-' + unicode(panelcounter + (u_max) - panelskip)
                                         html_str.append(
                                             '        <div class="panel '
                                             + pas + '">' + label + '</div>' + '\n'
@@ -482,7 +482,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                                 # regular panels
                                 else:
                                     panelcounter += 1
-                                    label = unicode(panelcounter-panelskip)
+                                    label = unicode(panelcounter - panelskip)
                                     html_str.append(
                                         '        <div class="panel '
                                         + pas + '">' + label + '</div>' + '\n'
