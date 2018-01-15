@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-  {% if page_title %}
-  <title>{{ page_title }}</title>
+  {% if pagetitle %}
+  <title>{{ pagetitle }}</title>
   {% else %}
   <title>Panelcode</title>
   {% endif %}
@@ -21,7 +21,7 @@
 </head>
 <body>
   <div class="wrapper">
-  {% if page_title %}<h1>{{ pagetitle }}</h1>{% endif %}
+  {% if pagetitle %}<h1>{{ pagetitle }}</h1>{% endif %}
   {% if datetime %}<p><small>{{ datetime }}</small></p>{% endif %}
   {% for item in contents %}
     {{ item }}
