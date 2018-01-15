@@ -1,7 +1,6 @@
 """A panelcode parser and renderer in a Processing.py (Python Mode) sketch."""
 
 from __future__ import print_function
-import datetime
 import os
 import sys
 
@@ -25,7 +24,7 @@ ui_list = []
 cfg = {'data': {'path': '/data/input/',
                 'file': 'index.md'},
        'tmpl': {'path': '/panelcode/templates',
-                'file': 'gallery_css3_wrap.html'},
+                'file': 'html_page.html'},
        'save': {'path': '/data/output/',
                 'file': 'index.html'}
        }
@@ -145,7 +144,6 @@ def processItem(item, **kwargs):
     # load template
     template = cfg['tmpl']['file']
     print(template)
-    tmpl = templates.load(filename=template)
 
     # load data
     datapath = cfg['data']['path'] + '/' + cfg['data']['file']
@@ -154,11 +152,10 @@ def processItem(item, **kwargs):
 
     # parse data
     html_results = render.parse_fenced_to_html(data, mode='pre', fmt='html')
-
     # wrap html in page template
-    html_page_str = tmpl.render(panelcode=html_results,
-                                pagetitle=cfg['data']['file'],
-                                datetime=datetime.datetime.now())
+    html_page_str = '\n'.join(render.html_page_wrapper(html_results,
+                                      pagetitle=cfg['data']['file'],
+                                      template=template))
 
     # save html page to file
     # ...leave standard save path in place
