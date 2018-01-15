@@ -40,6 +40,9 @@ def load(abspath='', filename='template.html'):
     pathlist.append(script_path + '/data/templates/')
     pathlist.append(script_path + '/data/')
     pathlist.append(script_path)
-    env = Environment(loader=FileSystemLoader(pathlist))
+    env = Environment(loader=FileSystemLoader(pathlist),
+        trim_blocks=True,
+        lstrip_blocks=True
+        )
     tmpl = env.get_template(filename)
     return tmpl

@@ -1,13 +1,17 @@
 <div style="clear: both;"></div>
 <bdo dir="ltr">
+  {% if reveal %}
   <details {{ reveal }} >
+  {% else %}
+  <details>
+  {% endif %}
     <summary>{{ summary }}</summary>
     <select class="{{  css_class }}">
     {% for option in option_list %}
       <option value="{{ option }}">{{ option }}</option>
     {% endfor %}
     </select>
-    {{ content }}
+    {% if content %}{{ content }}{% endif %}
   </details>
 </bdo>
 <div style="clear: both;"></div>

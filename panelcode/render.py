@@ -20,8 +20,8 @@ except ImportError:
 JQUERY_SCRIPT_CDN = """<script
   src="https://code.jquery.com/jquery-2.2.4.min.js"
   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
-  crossorigin="anonymous"></script>
- """
+  crossorigin="anonymous">
+</script>"""
 SIZER_SCRIPT = """<script type="text/javascript">
   $(document).ready(function(){
     // On load
@@ -36,8 +36,7 @@ SIZER_SCRIPT = """<script type="text/javascript">
         .addClass( $(this).val() );
     })
 })
-</script>
-"""
+</script>"""
 
 
 def console_html(size_list='', content='', summary='panelcode',
@@ -72,7 +71,7 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='',
         r' *(`{3,}|~{3,})( *\S+ *)?\n'  # ```lang (removed)
         r'([\s\S]+?\s*)'
         r'(\1)(?: *\n+|$)')  # ```
-    data_fence_list = fences.split('\n'.join(data_list))
+    data_fence_list = fences.split(''.join(data_list))
     if consoles and len(data_fence_list) > 1:
         result_list.extend([JQUERY_SCRIPT_CDN, SIZER_SCRIPT])
     for idx, graph in enumerate(data_fence_list):
@@ -80,7 +79,7 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='',
             continue
         if idx % 5 == 0:
             if fmt == 'html':
-                result_list.append('\n' + mdhtml_to_html(graph) + '\n')
+                result_list.append(mdhtml_to_html(graph))
             else:
                 result_list.append(graph)
         if idx % 5 == 3:
@@ -93,7 +92,7 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='',
                                    css_class='all-size',
                                    reveal=reveal)
         result_list.append(console_str)
-    result_list.append('\n<p style="font-size:x-small">' +
+    result_list.append('<p style="font-size:x-small">' +
                        '<em>panelcode: fence pre-processor</em></p>\n')
     return result_list
 
@@ -111,9 +110,8 @@ def parse_graph_to_html(graph, mode='replace', reveal='',
     result = ''
     if colorize:
         graph_out = unicode(highlight.style_string(graph))
-        graph_out = '\n' + graph_out + '\n'
     else:
-        graph_out = '\n```panelcode' + graph + '\n```\n'
+        graph_out = '    <pre><code>' + graph + '    </code></pre>' + '\n'
         # ... or use data_fence_list[idx-2] -- catches ~~~ etc.
     try:
         graph_clean = ''.join(decomment(graph))
@@ -295,13 +293,13 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
             imgpath = gkve['imgpath']
         except KeyError:
             imgpath = ''
-        html_str.append('<div class="gallery ' + opts_render(galleryopts[0]) + '">')
+        html_str.append('<div class="gallery ' + opts_render(galleryopts[0]) + '">' + '\n')
 
         spreads = gallery.pop('spread', '')
         g_layout_counter = 0
         for spread in spreads:
             spreadopts = spread.pop('spreadopts', [['']])  # {:: }
-            html_str.append('  <div class="spread ' + opts_render(spreadopts[0]) + '">')
+            html_str.append('  <div class="spread ' + opts_render(spreadopts[0]) + '">' + '\n')
 
             layouts = spread.pop('layout', '')
             for layout in layouts:
@@ -320,10 +318,10 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                 html_str.append(i_before)
                 if 'url' in kve:
                     if 'http' not in kve['url']:
-                        html_str.append('    <a href="http://'+ kve['url'] +'">')
+                        html_str.append('    <a href="http://'+ kve['url'] +'">' + '\n')
                     else:
-                        html_str.append('    <a href="'+ kve['url'] +'">')
-                html_str.append('    <div class="layout ' + opts_render(layoutopts[0]) + '">')
+                        html_str.append('    <a href="'+ kve['url'] +'">' + '\n')
+                html_str.append('    <div class="layout ' + opts_render(layoutopts[0]) + '">' + '\n')
                 label_str_html = ''
 
                 panelgroups = layout.pop('panelgroup', '')
@@ -404,7 +402,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                         # set width to max
                         pgroup_width = max(row_lengths)
                     panelgroupopts[0][0] = panelgroupopts[0][0] + ' w' + unicode(pgroup_width)
-                    html_str.append('      <div class="panelgroup ' + panelgroupopts[0][0] + '">')
+                    html_str.append('      <div class="panelgroup ' + panelgroupopts[0][0] + '">' + '\n')
 
                     for row in row_list:
                         # load panel arguments
@@ -432,7 +430,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                                     panelskip += 1
                                     html_str.append(
                                         '        <div class="panel '
-                                        + pas + '">*</div>'
+                                        + pas + '">*</div>' + '\n'
                                         )
                                 # unencoded (multi)panels -- mutually exclusive with blanks
                                 elif 'u' in panel_args:
@@ -452,20 +450,20 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                                         panelskip += 1
                                         html_str.append(
                                             '        <div class="panel '
-                                            + pas + '">*</div>'
+                                            + pas + '">*</div>' + '\n'
                                             )
                                     elif u_max == 1:
                                         panelcounter += 1
                                         label = unicode(panelcounter-panelskip)
                                         html_str.append(
                                             '        <div class="panel '
-                                            + pas + '">' + label + '</div>'
+                                            + pas + '">' + label + '</div>' + '\n'
                                             )
                                     else:
                                         label = unicode(panelcounter+1-panelskip) + '-' + unicode(panelcounter+(u_max)-panelskip)
                                         html_str.append(
                                             '        <div class="panel '
-                                            + pas + '">' + label + '</div>'
+                                            + pas + '">' + label + '</div>' + '\n'
                                             )
                                         panelcounter += u_max
                                 # regular panels
@@ -474,10 +472,10 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                                     label = unicode(panelcounter-panelskip)
                                     html_str.append(
                                         '        <div class="panel '
-                                        + pas + '">' + label + '</div>'
+                                        + pas + '">' + label + '</div>' + '\n'
                                         )
 
-                    html_str.append('      </div>')
+                    html_str.append('      </div>' + '\n')
 
                 html_str.append(i_str)
                 try:
@@ -493,19 +491,19 @@ def pobj_to_html5_ccs3_grid(pcode_obj):
                             except:
                                 label_str = unicode(g_layout_counter)
                             label_str_html = '      <div class="label bottom">' \
-                                + label_str + '</div>'
+                                + label_str + '</div>' + '\n'
                     if 'label' in kve:
                         label_str = kve['label']
-                        label_str_html = '      <div class="label bottom"><div>' + label_str + '</div></div>'
+                        label_str_html = '      <div class="label bottom"><div>' + label_str + '</div></div>' + '\n'
                     if label_str_html:
                         html_str.append('      ' + label_str_html)
                 except TypeError:
                     pass
-                html_str.append('    </div>')
+                html_str.append('    </div>' + '\n')
                 if 'url' in kve:
-                    html_str.append('\n</a>\n')
+                    html_str.append('    </a>' + '\n')
                 html_str.append(i_after)
-            html_str.append('  </div>')
-        html_str.append('</div>')
+            html_str.append('  </div>' + '\n')
+        html_str.append('</div>' + '\n')
 
     return html_str
