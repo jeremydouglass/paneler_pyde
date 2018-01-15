@@ -6,6 +6,7 @@
 """
 
 from __future__ import print_function
+import datetime
 import os
 import re
 import panelcode.parser as parser
@@ -100,14 +101,19 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='open',
 
 
 def html_page_wrapper(data_list, pagetitle='', template='html_page.html',
-                      styles_inline=True):
+                      styles_inline=True, show_timestamp=True, timestamp=''):
     """Wrap html contents in a full panelcode html page with styles.
     Styles_inline copies the style information into the page itself,
     rather than pointing to external stylesheets.
     """
     tmpl = templates.load(filename=template)
-    html_page_str = tmpl.render(contents=data_list, pagetitle=pagetitle
-                                styles_inline=styles_inline)
+    if show_timestamp:
+        timestamp = datetime.datetime.now().replace(microsecond=0)
+    html_page_str = tmpl.render(contents=data_list,
+                                pagetitle=pagetitle,
+                                styles_inline=styles_inline,
+                                datetime=timestamp
+                                )
     result_list = html_page_str.split('\n')
     return result_list
 
