@@ -68,6 +68,7 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='open',
     before or after it ('pre' / 'post')
     """
     result_list = []
+    global_opts = {}
     fences = re.compile(  # see mistune
         r' *(`{3,}|~{3,})( *\S+ *)?\n'  # ```lang (removed)
         r'([\s\S]+?\s*)'
@@ -75,6 +76,7 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='open',
     data_fence_list = fences.split('\n'.join(data_list))
     if consoles and len(data_fence_list) > 1:
         result_list.extend([JQUERY_SCRIPT_CDN, SIZER_SCRIPT])
+    
     for idx, graph in enumerate(data_fence_list):
         if graph is None:
             continue
@@ -84,8 +86,10 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='open',
             else:
                 result_list.append(graph)
         if idx % 5 == 3:
+            new_global_opts = (graph_to_pcode_obj(graph).asDict())['pcode'][0].pop('pcodeopts', [['']])
+            global_opts = merge_dicts(global_opts, new_global_opts)
             result = parse_graph_to_html(graph, mode, reveal,
-                                         consoles, colorize)
+                                         consoles, colorize, global_opts)
             result_list.append(result)
     if consoles and len(data_fence_list) > 1:
         console_str = console_html(content='',
@@ -118,8 +122,14 @@ def html_page_wrapper(data_list, pagetitle='', template='html_page.html',
     return result_list
 
 
+def graph_to_pcode_obj(graph):
+    graph_clean = ''.join(decomment(graph))
+    pcode_obj = parser.parse(graph_clean, parser.root)
+    return pcode_obj
+
+
 def parse_graph_to_html(graph, mode='replace', reveal='',
-                        consoles=True, colorize=True):
+                        consoles=True, colorize=True, global_opts=None):
     """Parse panelcode only within markdown fenced code blocks.
     Split a list of lines on fence open and close markers,
     attempt to render code block contents as panelcode or pass through,
@@ -135,8 +145,7 @@ def parse_graph_to_html(graph, mode='replace', reveal='',
         graph_out = '    <pre><code>' + graph + '    </code></pre>' + '\n'
         # ... or use data_fence_list[idx-2] -- catches ~~~ etc.
     try:
-        graph_clean = ''.join(decomment(graph))
-        pcode_obj = parser.parse(graph_clean, parser.root)
+        pcode_obj = graph_to_pcode_obj(graph)
         html_lines = pobj_to_html5_ccs3_grid(pcode_obj)
         console_str = ''
         if consoles or 'console' in graph:
@@ -196,6 +205,17 @@ def mdhtml_to_html(data_str):
     mdrenderer = mistune.Renderer()
     markdown = mistune.Markdown(renderer=mdrenderer)
     return markdown(data_str)
+
+
+def merge_dicts(*dict_args):
+    """
+    Given any number of dicts, shallow copy and merge into a new dict,
+    precedence goes to key value pairs in latter dicts.
+    """
+    result = {}
+    for dictionary in dict_args:
+        result.update(dictionary)
+    return result
 
 
 def pc_md_to_html(data_list):
@@ -300,7 +320,14 @@ def pobj_counts(pcode_obj):
     return counts
 
 
-def pobj_to_html5_ccs3_grid(pcode_obj):
+def pobj_globals(pcode_obj):
+    """ convert a parsed panelcode object into html for html5 + css3-grid rendering"""
+    html_str = []
+    pcode = (pcode_obj.asDict())['pcode'][0]  # no multiple pcode blocks - no delimiter
+    pcodeopts = pcode.pop('pcodeopts', [['']])  # {:::: } # pcodeopts = pcode['pcodeopts']
+
+
+def pobj_to_html5_ccs3_grid(pcode_obj, global_opts):
     """ convert a parsed panelcode object into html for html5 + css3-grid rendering"""
     html_str = []
     pcode = (pcode_obj.asDict())['pcode'][0]  # no multiple pcode blocks - no delimiter
