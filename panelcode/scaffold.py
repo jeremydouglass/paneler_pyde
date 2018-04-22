@@ -41,13 +41,17 @@ def images_to_markdown(fpath, fnpattern, template):
     fnamelist = fpath_to_fnamelist(fpath, fnpattern)
     results = []
     for fname in fnamelist:
-        result = r" 1z {: img='" + fname + r"' }"
-        results.append(result)
+        # result = r" 1.z {: img='" + os.path.basename(fname) + r"' }"
+        # results.append(result)
+        if fname.startswith(fpath):
+            results.append(fname[len(fpath)+1:]) # remove base leaving subdirs
+        else:
+            results.append(fname)
 
-    page_str = tmpl.render(panelcode=fnamelist,
+    page_str = tmpl.render(panelcode=results,
                            pagetitle='Panelcode-markdown scaffold',
                            datetime=datetime.datetime.now(),
-                           galleryopts=r'{::: iafter autoilabel }'
+                           galleryopts=r"{::: ibefore autoilabel imgpath='"+ fpath +"/' }"
                            )
     return page_str
 
@@ -84,9 +88,14 @@ if __name__ == "__main__":
     if CL_ARGS.output:
         try:
             with open(CL_ARGS.output, 'wb') as handle:
+                for arg in vars(CL_ARGS):
+                    arg_str = '- ' + arg  + ': ' + getattr(CL_ARGS, arg) + '\n'
+                    handle.write(arg_str)
+                    print(arg_str)
                 handle.write(PAGE_STR)
+                print(PAGE_STR)
         except EnvironmentError as err:
             print(CL_ARGS.output + ' not saved.')
             print(err)
             raise
-    print(PAGE_STR)
+    
