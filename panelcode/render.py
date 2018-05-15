@@ -92,13 +92,13 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='open',
             if new_global_opts[0][0]:
                 pass
             for item in new_global_opts[0]:
-                if isinstance(item, list) and len(item)==2:
+                if isinstance(item, list) and len(item) == 2:
                     global_opts_dict.update([item])
                 if isinstance(item, basestring) and len(item) > 0:
                     global_opts_dict.update([[item, '']])
     global_opts_list = []
     for key, value in global_opts_dict.items():
-        global_opts_list.append([key,value])
+        global_opts_list.append([key, value])
     global_opts.append(global_opts_list)
 
     for idx, graph in enumerate(data_fence_list):
@@ -145,6 +145,7 @@ def html_page_wrapper(data_list, pagetitle='', template='html_page.html',
 
 
 def graph_to_pcode_obj(graph):
+    """Convert panelcode code block to a pcode pyparsing object."""
     graph_clean = ''.join(decomment(graph))
     pcode_obj = parser.parse(graph_clean, parser.root)
     return pcode_obj
@@ -393,9 +394,9 @@ def pobj_to_html5_ccs3_grid(pcode_obj, global_opts):
                 html_str.append(i_before)
                 if 'url' in kve:
                     if 'http' not in kve['url']:
-                        html_str.append('    <a href="http://' + kve['url'] +'">' + '\n')
+                        html_str.append('    <a href="http://' + kve['url'] + '">' + '\n')
                     else:
-                        html_str.append('    <a href="' + kve['url'] +'">' + '\n')
+                        html_str.append('    <a href="' + kve['url'] + '">' + '\n')
                 html_str.append('    <div class="layout ' + opts_render(layoutopts[0]) + '">' + '\n')
                 label_str_html = ''
 
@@ -529,13 +530,13 @@ def pobj_to_html5_ccs3_grid(pcode_obj, global_opts):
                                             )
                                     elif u_max == 1:
                                         panelcounter += 1
-                                        label = unicode(panelcounter-panelskip)
+                                        label = unicode(panelcounter - panelskip)
                                         html_str.append(
                                             '        <div class="panel '
                                             + pas + '">' + label + '</div>' + '\n'
                                             )
                                     else:
-                                        label = unicode(panelcounter+1-panelskip) + '-' + unicode(panelcounter + (u_max) - panelskip)
+                                        label = unicode(panelcounter + 1 - panelskip) + '-' + unicode(panelcounter + (u_max) - panelskip)
                                         html_str.append(
                                             '        <div class="panel '
                                             + pas + '">' + label + '</div>' + '\n'
