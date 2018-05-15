@@ -71,7 +71,7 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='open',
     before or after it ('pre' / 'post')
     """
     result_list = []
-    global_opts = {}
+    global_opts = []
     fences = re.compile(  # see mistune
         r' *(`{3,}|~{3,})( *\S+ *)?\n'  # ```lang (removed)
         r'([\s\S]+?\s*)'
@@ -83,6 +83,24 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='open',
     # inject css customization / override file hook
     result_list.extend([CSS_ATTACH_SCRIPT])
 
+    # assemble all global opts from any code block and merge
+    # before passing merged opts into per-code-block contexts
+    global_opts_dict = dict()
+    for idx, graph in enumerate(data_fence_list):
+        if idx % 5 == 3:
+            new_global_opts = (graph_to_pcode_obj(graph).asDict())['pcode'][0].pop('pcodeopts', [['']])
+            if new_global_opts[0][0]:
+                pass
+            for item in new_global_opts[0]:
+                if isinstance(item, list) and len(item)==2:
+                    global_opts_dict.update([item])
+                if isinstance(item, basestring) and len(item) > 0:
+                    global_opts_dict.update([[item, '']])
+    global_opts_list = []
+    for key, value in global_opts_dict.items():
+        global_opts_list.append([key,value])
+    global_opts.append(global_opts_list)
+
     for idx, graph in enumerate(data_fence_list):
         if graph is None:
             continue
@@ -92,8 +110,6 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='open',
             else:
                 result_list.append(graph)
         if idx % 5 == 3:
-            new_global_opts = (graph_to_pcode_obj(graph).asDict())['pcode'][0].pop('pcodeopts', [['']])
-            global_opts = merge_dicts(global_opts, new_global_opts)
             result = parse_graph_to_html(graph, mode, reveal,
                                          consoles, colorize, global_opts)
             result_list.append(result)
@@ -152,7 +168,7 @@ def parse_graph_to_html(graph, mode='replace', reveal='',
         # ... or use data_fence_list[idx-2] -- catches ~~~ etc.
     try:
         pcode_obj = graph_to_pcode_obj(graph)
-        html_lines = pobj_to_html5_ccs3_grid(pcode_obj)
+        html_lines = pobj_to_html5_ccs3_grid(pcode_obj, global_opts)
         console_str = ''
         if consoles or 'console' in graph:
             if 'noconsole' not in graph:
@@ -232,7 +248,7 @@ def pc_md_to_html(data_list):
     return markdown("\n".join(data_list) + label)
 
 
-def img_render(kve, lopt_str, sopt_str, gopt_str, popt_str, img_path):
+def img_render(kve, lopt_str, sopt_str, gopt_str, popt_str, glopt_str, img_path):
     """Render image preview strings based on settings."""
     i_before = ''
     i_layer = ''
@@ -240,7 +256,7 @@ def img_render(kve, lopt_str, sopt_str, gopt_str, popt_str, img_path):
     i_label_str_html = ''
     if 'img' in kve:
         img_paths = [x.strip() for x in kve['img'].split(':')]
-        for opt_str in popt_str, gopt_str, sopt_str, lopt_str:
+        for opt_str in glopt_str, popt_str, gopt_str, sopt_str, lopt_str:
             if 'autoilabel' in opt_str:
                 i_label_str = os.path.splitext(os.path.basename(img_paths[0]))[0]
                 i_label_str_html = '      <div class="label bottom">' \
@@ -252,7 +268,7 @@ def img_render(kve, lopt_str, sopt_str, gopt_str, popt_str, img_path):
         img_tag_str = ''
         for idx, path in enumerate(img_paths):
             img_tag_str = img_tag_str + '<img src="' + img_path + img_paths[idx] + '"/>'
-        for opt_str in [popt_str, gopt_str, sopt_str, lopt_str]:
+        for opt_str in [glopt_str, popt_str, gopt_str, sopt_str, lopt_str]:
             if 'ibefore' in opt_str:
                 i_before = '    <div class="layout ' + lopt_str \
                          + '"><div class="img">' + img_tag_str + '</div>' \
@@ -336,6 +352,7 @@ def pobj_globals(pcode_obj):
 def pobj_to_html5_ccs3_grid(pcode_obj, global_opts):
     """ convert a parsed panelcode object into html for html5 + css3-grid rendering"""
     html_str = []
+    pkve = opts_load(global_opts[0])[2]
     pcode = (pcode_obj.asDict())['pcode'][0]  # no multiple pcode blocks - no delimiter
     pcodeopts = pcode.pop('pcodeopts', [['']])  # {:::: } # pcodeopts = pcode['pcodeopts']
 
@@ -346,8 +363,11 @@ def pobj_to_html5_ccs3_grid(pcode_obj, global_opts):
         try:
             imgpath = gkve['imgpath']
         except KeyError:
-            imgpath = ''
-        html_str.append('<div class="gallery ' + opts_render(galleryopts[0]) + '">' + '\n')
+            try:
+                imgpath = pkve['imgpath']
+            except KeyError:
+                imgpath = ''
+        html_str.append('<div class="gallery ' + opts_render(global_opts[0]) + ' ' + opts_render(galleryopts[0]) + '">' + '\n')
 
         spreads = gallery.pop('spread', '')
         g_layout_counter = 0
@@ -367,6 +387,7 @@ def pobj_to_html5_ccs3_grid(pcode_obj, global_opts):
                     opts_render(spreadopts[0]),
                     opts_render(galleryopts[0]),
                     opts_render(pcodeopts[0]),
+                    opts_render(global_opts[0]),
                     imgpath
                     )
                 html_str.append(i_before)
