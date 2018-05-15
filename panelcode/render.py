@@ -21,6 +21,11 @@ except ImportError:
 CSS_ATTACH_SCRIPT = """<script type="text/javascript">
   $('head').append('<link rel="stylesheet" type="text/css" href="./custom.css">')
 </script>"""
+
+CSS_ATTACH_SCRIPT_NO_CACHE = """<script type="text/javascript">
+   $('head').append('<link rel="stylesheet" type="text/css" href="./custom.css?nocache=' + new Date().toISOString() + '">')
+</script>"""
+
 JQUERY_SCRIPT_CDN = """<script
   src="https://code.jquery.com/jquery-2.2.4.min.js"
   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="
@@ -81,7 +86,7 @@ def parse_fenced_to_html(data_list, mode='replace', reveal='open',
         result_list.extend([JQUERY_SCRIPT_CDN, SIZER_SCRIPT])
 
     # inject css customization / override file hook
-    result_list.extend([CSS_ATTACH_SCRIPT])
+    result_list.extend([CSS_ATTACH_SCRIPT_NO_CACHE])
 
     # assemble all global opts from any code block and merge
     # before passing merged opts into per-code-block contexts
